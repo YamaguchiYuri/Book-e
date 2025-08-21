@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  defer src="cadastro.js"></script>
+    <title>CADASTRO</title>
+    <link rel="stylesheet" href="cadastro.css">
+</head>
+<main>
+    <header>
+        <div class="booke">CADASTRO</div>
+    </header>
+    <body>
+        <div class="pixel_dialog">
+            <div class="dialog_header">
+                <span></span> <span class="close_button">X</span>
+            </div>
+            <div class="dialog_content">
+                <form action="/cadastrar" method="GET">
+                    <label for="email">EMAIL</label>
+                    <input type="email" id="email"/>
+                    <label id="lblUsername" for="username">USUARIO</label>
+                    <input type="text" id="username"/>
+                    <label id="lblPassword" for="password">SENHA</label>
+                    <input type="password" id="password"/>
+                    <label id="lblConfirme" for="confirme">CONFIRME SUA SENHA</label>
+                    <input type="password" id="confirme"/> 
+                    <p id="aviso"></p>
+                    <div class="dialog_buttons">
+                        <button type="submit" class="btn btnOk">CADASTRAR</button>
+                        <button type="reset" class="btn btnCancelar">VOLTAR</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</main>
+</html>
