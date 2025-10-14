@@ -126,7 +126,7 @@ input {
         0 -3px 0 #9f85d4;
 }
 
-.btnCancelar {
+.btnVoltar {
     width:7rem;
     background-color: #bf9fff;
     color: rgb(255, 255, 255);
@@ -139,8 +139,8 @@ input {
 
 .btn:active {
     position: relative;
-    top: 2px; /* Simula o botão sendo afundado */
-    box-shadow: none; /* Remove a sombra ao clicar */
+    top: 2px; 
+    box-shadow: none;
 }
 #lblPassword{
     position:relative;

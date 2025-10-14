@@ -4,6 +4,13 @@ const inpPassword = document.querySelector("#password");
 const inpConfirme = document.querySelector("#confirme");
 const inpTodos = document.querySelectorAll('form input');
 const aviso = document.querySelector("#aviso");
+const btnVoltar = document.getElementById('btnVoltar');
+const form = document.querySelector('form');
+
+btnVoltar.addEventListener('click', (evt)=>{
+    evt.preventDefault();
+    window.location.href='/login.html';
+})
 
 const avisos = {
     username:"Apenas Letras e Numeros",
@@ -30,3 +37,33 @@ inpTodos.forEach(function(inp){
 });
 
 
+//Teste de cadastro
+
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const userData = {
+        email: inpEmail.value,
+        username: inpUsername.value,
+        password: inpPassword.value
+    };
+
+    // Envia a requisição POST para o json-server
+    fetch('http://localhost:3000/users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Sucesso:', data); // Mostra a resposta do servidor falso
+        alert('Usuário cadastrado com sucesso no servidor de teste!');
+        window.location.href = '/login.html';
+    })
+    .catch((error) => {
+        console.error('Erro:', error);
+        alert('Ocorreu um erro ao tentar cadastrar.');
+    });
+});

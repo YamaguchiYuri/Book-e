@@ -17,7 +17,7 @@
                 <span></span> <span class="close_button">X</span>
             </div>
             <div class="dialog_content">
-                <form action="/cadastrar" method="GET">
+                <form action="/cadastrar" method="POST">
                     <label for="email">EMAIL</label>
                     <input type="email" id="email"/>
                     <label id="lblUsername" for="username">USUARIO</label>
@@ -28,10 +28,11 @@
                     <input type="password" id="confirme"/> 
                     <p id="aviso"></p>
                     <div class="dialog_buttons">
-                        <button type="submit" class="btn btnOk">CADASTRAR</button>
-                        <button type="reset" class="btn btnCancelar">VOLTAR</button>
+                        <button id="btnOk" type="submit" class="btn btnOk">CADASTRAR</button>
+                        <button type="button" id="btnVoltar" class="btn btnVoltar">VOLTAR</button>
                     </div>
                 </form>
+                
             </div>
         </div>
     </body>
