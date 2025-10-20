@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  defer src="formulario.js"></script>
+    <title>CADASTRO</title>
+    <link rel="stylesheet" href="formulario.css">
+</head>
+<main>
+    <header>
+        <div class="booke">FORMULARIO</div>
+    </header>
+    <body>
+        <div class="pixel_dialog">
+            <div class="dialog_header">
+                <span></span> <span class="close_button">X</span>
+            </div>
+            <div class="dialog_content">
+                <form action="/cadastrar" method="POST">
+                    <label id="lblData_nascimento" for="data_nascimento">DATA DE NASCIMENTO</label>
+                    <input type="date" id="data_nascimento"/>
+                    <label id="lblFaculdade" for="faculdade">QUAL SUA FACULDADE?</label>
+                    <input type="text" id="faculdade"/>
+                    <label id="lblCurso" for="curso">QUAL CURSO VOCE FREQUENTA?</label>
+                    <input type="text" id="curso"/>
+                    <label id="lblCiclo" for="ciclo">EM QUE CICLO VOCE ESTÁ?</label>
+                    <input type="number" id="ciclo"/>
+                    <button id="btnCursos btn">CURSOS</button>
+                    <div class="dialog_buttons">
+                        <button id="btnOk" type="submit" class="btn btnOk">FINALIZAR FORMULARIO</button>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </body>
+</main>
+</html>

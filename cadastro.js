@@ -7,6 +7,53 @@ const aviso = document.querySelector("#aviso");
 const btnVoltar = document.getElementById('btnVoltar');
 const form = document.querySelector('form');
 
+// --- CÓDIGO PARA TORNAR A JANELA ARRASTÁVEL ---
+
+// 1. Seleciona os elementos
+const dialogWindow = document.querySelector('.pixel_dialog');
+const dialogHeader = document.querySelector('.dialog_header');
+
+// Variáveis para guardar a posição do clique
+let offsetX, offsetY;
+
+// 2. Função que é chamada quando o mouse é pressionado no header
+const startDrag = (e) => {
+    // Previne seleção de texto indesejada
+    e.preventDefault();
+
+    // Calcula a posição do clique *dentro* da janela
+    // Posição do mouse na tela - Posição da janela na tela
+    offsetX = e.clientX - dialogWindow.offsetLeft;
+    offsetY = e.clientY - dialogWindow.offsetTop;
+
+    // Adiciona os "escutadores" de movimento e de soltar o mouse
+    document.addEventListener('mousemove', doDrag);
+    document.addEventListener('mouseup', stopDrag);
+}
+
+// 3. Função que é chamada enquanto o mouse é movido
+const doDrag = (e) => {
+    // Calcula a nova posição da janela
+    // Posição do mouse na tela - Posição inicial do clique
+    let newLeft = e.clientX - offsetX;
+    let newTop = e.clientY - offsetY;
+
+    // Aplica a nova posição à janela
+    dialogWindow.style.left = newLeft + 'px';
+    dialogWindow.style.top = newTop + 'px';
+}
+
+// 4. Função que é chamada quando o mouse é solto
+const stopDrag = () => {
+    // Remove os "escutadores" para parar de arrastar
+    document.removeEventListener('mousemove', doDrag);
+    document.removeEventListener('mouseup', stopDrag);
+}
+
+// 5. Inicia tudo: adiciona o "escutador" de clique no header
+dialogHeader.addEventListener('mousedown', startDrag);
+
+
 btnVoltar.addEventListener('click', (evt)=>{
     evt.preventDefault();
     window.location.href='/login.html';
