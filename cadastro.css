@@ -25,17 +25,16 @@ body {
     background-color: #b3d2ff;
     width: 350px; 
 
-    /* --- ADICIONE ESTAS 4 LINHAS --- */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* Centraliza a janela */
 
     box-shadow: 
-        0 4px 0 #bf9fff,  /* Sombra inferior verde */
-        0 -4px 0 #bf9fff, /* Sombra superior verde */
-        4px 0 0 #bf9fff,  /* Sombra direita verde */
-        -4px 0 0 #bf9fff; /* Sombra esquerda verde */
+        0 4px 0 #bf9fff, 
+        0 -4px 0 #bf9fff,
+        4px 0 0 #bf9fff, 
+        -4px 0 0 #bf9fff; 
 
     image-rendering: pixelated;
     image-rendering: crisp-edges;
@@ -48,9 +47,8 @@ body {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
-    
-    /* --- ADICIONE ESTA LINHA --- */
-    cursor: move; /* Indica que o elemento é arrastável */
+
+    cursor: move;
 }
 
 .dialog_content {

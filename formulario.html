@@ -9,11 +9,12 @@
 </head>
 <main>
     <header>
-        <div class="booke">FORMULARIO</div>
+        
     </header>
     <body>
         <div class="pixel_dialog">
             <div class="dialog_header">
+                <div class="booke">FORMULARIO</div>
                 <span></span> <span class="close_button">X</span>
             </div>
             <div class="dialog_content">
@@ -24,9 +25,12 @@
                     <input type="text" id="faculdade"/>
                     <label id="lblCurso" for="curso">QUAL CURSO VOCE FREQUENTA?</label>
                     <input type="text" id="curso"/>
+                    <label id="lblCiclo_faculdade" for="lblCiclo_faculdade">QUANTOS CICLOS TEM SEU CURSO?</label>
+                    <input type="number" id="ciclo_faculdade"/>
                     <label id="lblCiclo" for="ciclo">EM QUE CICLO VOCE ESTÁ?</label>
                     <input type="number" id="ciclo"/>
-                    <button id="btnCursos btn">CURSOS</button>
+                    <label id="lblMateria" for="materia">QUAIS SÃO AS MATERIAS DO SEU CICLO ATUAL?</label>
+                    <button type="button" class="btn btnMateria" id="btnMateria">ADICIONAR MATERIAS</button>
                     <div class="dialog_buttons">
                         <button id="btnOk" type="submit" class="btn btnOk">FINALIZAR FORMULARIO</button>
                     </div>
