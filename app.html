@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book-e - Principal</title>
+    <link rel="stylesheet" href="formulario.css">
+    <link rel="stylesheet" href="app.css">
+    <script defer src="app.js"></script>
+</head>
+<body>
+
+    <main id="desktop">
+        <div class="icon" data-modal-id="modal-agenda">
+            <img src="./assets/agenda.png" alt="Agenda">
+            <span>Agenda</span>
+        </div>
+
+        <div class="icon" data-modal-id="modal-anotacoes">
+            <img src="./assets/anotacoes.png" alt="Anotações">
+            <span>Anotações</span>
+        </div>
+
+        <div class="icon" data-modal-id="modal-notas">
+            <img src="./assets/notas.png" alt="Notas">
+            <span>Notas</span>
+        </div>
+
+    </main>
+
+    <div id="modal-agenda" class="pixel_dialog hidden">
+        <div class="dialog_header">
+            <span>AGENDA ACADEMICA</span>
+            <span class="close_button">X</span>
+        </div>
+        <div class="dialog_content content-agenda">
+            <p>Sua próxima prova é...</p>
+        </div>
+    </div>
+
+    <div id="modal-anotacoes" class="pixel_dialog hidden">
+        <div class="dialog_header">
+            <span>ANOTAÇÕES</span>
+            <span class="close_button">X</span>
+        </div>
+        <div class="dialog_content content-anotacoes">
+            <label for="area-anotacao">Escreva sua anotação:</label>
+            <textarea id="area-anotacao"></textarea>
+            <button class="btn">Salvar</button>
+        </div>
+    </div>
+
+    <div id="modal-notas" class="pixel_dialog hidden">
+        <div class="dialog_header">
+            <span>NOTAS</span>
+            <span class="close_button">X</span>
+        </div>
+        <div class="dialog_content content-notas">
+            <p>Materias</p>
+            </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+/* app.css */
+
+/* --- 1. Estilos do Desktop --- */
+body {
+    /* O fundo já está no formulario.css, mas garantimos aqui */
+    background: linear-gradient(to bottom, #ffa9dd, #ffd7ef);
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Impede a página de rolar */
+}
+
+#desktop {
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Ícones em coluna, no canto */
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    cursor: pointer;
+    text-align: center;
+    color: white;
+}
+
+.icon img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 5px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.icon span {
+    font-size: 12px;
+    /* Sombra para legibilidade */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* --- 2. Estilos Comuns de Janela --- */
+
+/* Esta classe já vem do seu HTML */
+.hidden {
+    display: none;
+}
+
+/* Garante o cursor de fechar */
+.close_button {
+    cursor: pointer;
+}
+
+/* Os estilos .pixel_dialog, .dialog_header, etc.
+   já estão vindo do seu "formulario.css" linkado! */
+
+
+/* --- 3. Estilos Específicos de Conteúdo --- */
+
+/* Layout da Janela de Anotações */
+.content-anotacoes {
+    height: 300px; /* Altura específica */
+    display: flex;
+    flex-direction: column;
+}
+
+.content-anotacoes label {
+    margin-bottom: 10px;
+}
+
+.content-anotacoes textarea {
+    flex-grow: 1; /* Ocupa o espaço que sobrar */
+    width: 100%;
+    margin-bottom: 15px;
+    /* Reutilizando o estilo do seu formulário! */
+    background-color: #94add3;
+    border: none;
+    outline: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+.content-anotacoes .btn {
+    width: 100%; /* Botão "Salvar" grande */
+    background-color: #a0f386; /* Cor verde */
+    box-shadow: 0 3px 0 #d5ffc8, 3px 0 0 #d5ffc8, -3px 0 0 #d5ffc8, 0 -3px 0 #d5ffc8;
+}
+
+/* Layout da Janela de Agenda */
+.content-agenda {
+    height: 250px;
+}
+.content-agenda p {
+    font-size: 14px;
+}
+
+/* Layout da Janela de Notas */
+.content-notas {
+    height: 400px;
+}
+.content-notas p {
+    font-weight: bold;
+}
