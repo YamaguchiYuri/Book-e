@@ -2,14 +2,11 @@
 
 main{
     margin:0px;
-    position:relative;
     padding:0px;
 }
 body {
     background:linear-gradient(to bottom, #ffa9dd, #ffd7ef);
     font-family: 'Press Start 2P', cursive; 
-    display: grid;
-    place-items: center;
     height: 100vh;
     margin: 0;
 }
