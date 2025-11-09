@@ -89,6 +89,167 @@ body {
     background-color: #a0f386; /* Cor verde */
     box-shadow: 0 3px 0 #d5ffc8, 3px 0 0 #d5ffc8, -3px 0 0 #d5ffc8, 0 -3px 0 #d5ffc8;
 }
+/*Anotações feitas e nova anotação*/
+.content-anotacoes {
+    height: 400px; /* Dê uma altura fixa */
+    display: flex;
+    flex-direction: column; /* Coluna: [Lista] e [Botão] */
+    padding: 10px; /* Menos padding para a lista caber */
+}
+
+/* Área da lista (ocupa todo o espaço) */
+#note-list-area {
+    flex-grow: 1; /* Faz a lista ocupar o espaço disponível */
+    overflow-y: auto; /* Adiciona scroll se tiver muitas notas */
+    display: flex;
+    flex-wrap: wrap; /* Faz as pastas quebrarem a linha */
+    align-content: flex-start; /* Alinha as pastas no topo */
+    gap: 20px;
+    padding: 10px;
+    
+    /* Reutilizando seu estilo de input! */
+    background-color: #94add3;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+/* Rodapé com o botão "Criar" */
+.note-footer-actions {
+    padding-top: 15px;
+    text-align: center;
+}
+.note-footer-actions .btnMateria {
+    width: 80%;
+    /* Remove o position:absolute que vinha do formulario.css */
+    position: static; 
+}
+
+
+/* --- Estilo de cada "Pastinha" (Seu <p> sobre o botão) --- */
+
+.note-item {
+    position: relative; /* Essencial para o <p> flutuar */
+    width: 80px;
+    height: 80px;
+    text-align: center;
+}
+
+.note-item p {
+    position: absolute;
+    top: 50px; /* Posição do texto em cima da pasta */
+    left: 0;
+    right: 0;
+    font-size: 10px;
+    color: white;
+    text-shadow: 1px 1px 1px #000;
+    pointer-events: none; /* Deixa o clique "atravessar" o texto */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.note-item .note-folder-btn {
+    width: 64px;
+    height: 64px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+.note-item .note-folder-btn img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+
+/* --- Estilos do Sub-Modal (Nova Anotação) --- */
+
+#sub-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50; /* Acima das janelas normais */
+}
+
+#modal-nova-anotacao {
+    height: 600px;
+    width: 980px;
+    z-index: 51; /* Acima do overlay */
+    /* Garante que ele apareça mesmo se a janela de notas for arrastada */
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.content-nova-anotacao {
+    height: auto;
+}
+
+/* Reseta o position:absolute dos inputs/textareas */
+.content-nova-anotacao input,
+.content-nova-anotacao textarea {
+    position: static;
+    width: 100%;
+    margin-bottom: 15px;
+}
+.content-nova-anotacao textarea {
+    height: 400px;
+    /* Reutiliza o estilo do formulário */
+    background-color: #94add3;
+    border: none; outline: none; padding: 10px;
+    box-sizing: border-box; font-family: 'Press Start 2P', cursive;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+.content-nova-anotacao .modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.content-nova-anotacao .btn {
+    position: static; /* Remove position:absolute */
+}
+
+/*BOTAO DE APAGAR A FOLDER */
+.note-delete-btn {
+    position: absolute;
+    top: -5px;   /* Posição para fora, no canto */
+    right: -5px; /* Posição para fora, no canto */
+    
+    /* Reutilizando seu tema de cores */
+    background-color: #bf9fff; 
+    color: white;
+
+    /* Reutilizando seu estilo de sombra de botão */
+    box-shadow: 0 2px 0 #9f85d4, 2px 0 0 #9f85d4, -2px 0 0 #9f85d4, 0 -2px 0 #9f85d4;
+
+    width: 20px;
+    height: 20px;
+    
+    /* Centraliza o "X" */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 12px;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    z-index: 2; /* Garante que fique sobre a pasta */
+}
+
+.note-delete-btn:hover {
+    background-color: #9f85d4;
+}
+
+.note-delete-btn:active {
+    /* Efeito de clique */
+    box-shadow: none;
+    top: -3px;
+    right: -3px;
+}
 
 /* Layout da Janela de Agenda */
 .content-agenda {

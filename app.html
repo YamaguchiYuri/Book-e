@@ -5,7 +5,7 @@
     <title>Book-e - Principal</title>
     <link rel="stylesheet" href="formulario.css">
     <link rel="stylesheet" href="app.css">
-    <script defer src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </head>
 <body>
 
@@ -43,9 +43,36 @@
             <span class="close_button">X</span>
         </div>
         <div class="dialog_content content-anotacoes">
-            <label for="area-anotacao">Escreva sua anotação:</label>
-            <textarea id="area-anotacao"></textarea>
-            <button class="btn">Salvar</button>
+            
+            <div id="note-list-area">
+                </div>
+
+            <div class="note-footer-actions">
+                <button id="btn-show-new-note-modal" class="btn btnMateria">
+                    Criar nova anotação
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sub-modal-overlay" class="hidden"></div>
+
+    <div id="modal-nova-anotacao" class="pixel_dialog hidden">
+        <div class="dialog_header">
+            <span>CRIAR NOVA ANOTAÇÃO</span>
+            <span id="btn-cancel-new-note" class="close_button">X</span>
+        </div>
+        <div class="dialog_content content-nova-anotacao">
+            <label for="new-note-title">TÍTULO:</label>
+            <input type="text" id="new-note-title">
+            
+            <label for="new-note-content">CONTEÚDO:</label>
+            <textarea id="new-note-content"></textarea>
+
+            <div class="modal-buttons">
+                <button id="btn-save-new-note" class="btn btnOk">Salvar</button>
+                <button id="btn-cancel-new-note-2" class="btn btnCancelar">Cancelar</button>
+            </div>
         </div>
     </div>
 
