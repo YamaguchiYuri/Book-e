@@ -40,3 +40,9 @@ dialogHeader.addEventListener('mousedown', startDrag);
 document.getElementById('btnCadastrar').addEventListener('click', function() {
     window.location.href = '/cadastro.html';
 });
+
+function onLoginSuccess(username) {
+    localStorage.setItem('currentUser', username);
+    
+    window.location.href = '/formulario.html'; 
+}

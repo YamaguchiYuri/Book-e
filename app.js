@@ -1,4 +1,10 @@
-// app.js (VERSÃO CORRIGIDA E SIMPLIFICADA)
+//Confirmaçao se o usuairo esta logado
+const userId = localStorage.getItem('currentUser');
+
+if (!userId) {
+    alert('Você precisa estar logado para ver esta página.');
+    window.location.href = '/login.html';
+}
 
 // Importa os "inicializadores" de cada módulo
 import { initAllWindows, initIcons } from './janelas.js';
