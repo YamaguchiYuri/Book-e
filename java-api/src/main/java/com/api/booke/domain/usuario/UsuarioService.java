@@ -1,9 +1,14 @@
 package com.api.booke.domain.usuario;
 
+import java.time.*;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.api.booke.domain.usuario.dto.UsuarioDTO;
+import com.api.booke.domain.usuario.dto.*;
 import com.api.booke.entitites.Usuario;
 
 @Service
@@ -12,9 +17,9 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private UsuarioDTO toResponseUsuarioDTO (Usuario usuario){
+    private UsuarioResponseDto toResponseUsuarioDTO (Usuario usuario){
         if(usuario == null) return null;
-        return new UsuarioDTO(
+        return new UsuarioResponseDto(
             usuario.getId_user(),
             usuario.getNickname_user(),
             usuario.getEmail(),
@@ -23,64 +28,41 @@ public class UsuarioService {
         );
     }
 
-    
+    public UsuarioResponseDto createUsuario(UsuarioPostDto dto){
+        Usuario usuario = new Usuario();
+
+        usuario.setNickname_user(dto.getNickname_user());
+        usuario.setEmail(dto.getEmail());
+        usuario.setDt_nasciment_em(dto.getDt_nasciment_em());
+
+        return toResponseUsuarioDTO(usuarioRepository.save(usuario));
+    }
+
+    public UsuarioResponseDto alterarUsuario(Long id, UsuarioPutDTO dto){
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + id + " não encontrado."));
+
+        usuario.setNickname_user(dto.getNickname_user());
+        usuario.setEmail(dto.getEmail());
+        usuario.setDt_nasciment_em(dto.getDt_nasciment_em());
+
+        return toResponseUsuarioDTO(usuarioRepository.save(usuario));
+    }
+
+    public String deletarUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+        throw new IllegalArgumentException("Usuário com ID " + id + " não encontrado.");
+        }
+
+        usuarioRepository.deleteById(id);
+        return "Usuário deletado com sucesso.";
+    }
+
+
+    public List<UsuarioResponseDto> listarUsuarios(){
+        return usuarioRepository.findAll()
+            .stream()
+            .map(this::toResponseUsuarioDTO)
+            .collect(Collectors.toList());
+    }
 }
-
-/*
- *     public ClienteResponseDto createCliente(ClientePostDto dto) {
-        if (dto.getEndereco() == null) {
-            throw new IllegalArgumentException("Endereço é obrigatório");
-        }
-
-        Cliente cliente = new Cliente();
-        cliente.setCpf_cnpj(dto.getCpf_cnpj());
-        cliente.setTipo(dto.getTipo());
-        cliente.setNome(dto.getNome());
-        cliente.setNome_fantasia(dto.getNome_fantasia());
-        cliente.setData_abertura_nascimento(dto.getData_abertura_nascimento());
-        cliente.setHomepage(dto.getHomepage());
-        cliente.setEmail(dto.getEmail());
-        cliente.setNome_contato(dto.getNome_contato());
-        cliente.setContato(dto.getContato());
-        cliente.setEndereco(toEntity(dto.getEndereco()));
-
-        return toResponseDto(clienteRepository.save(cliente));
-    }
-
-    public ClienteResponseDto alterarCliente(Long id, ClientePutDto dto) {
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente", "id", id));
-
-        if (dto.getEndereco() == null) {
-            throw new IllegalArgumentException("Endereço é obrigatório");
-        }
-
-        cliente.setCpf_cnpj(dto.getCpf_cnpj());
-        cliente.setTipo(dto.getTipo());
-        cliente.setNome(dto.getNome());
-        cliente.setNome_fantasia(dto.getNome_fantasia());
-        cliente.setData_abertura_nascimento(dto.getData_abertura_nascimento());
-        cliente.setHomepage(dto.getHomepage());
-        cliente.setEmail(dto.getEmail());
-        cliente.setNome_contato(dto.getNome_contato());
-        cliente.setContato(dto.getContato());
-        cliente.setEndereco(toEntity(dto.getEndereco()));
-
-        return toResponseDto(clienteRepository.save(cliente));
-    }
-
-    public String deletarCliente(Long id) {
-        if (!clienteRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Cliente", "id", id);
-        }
-        clienteRepository.deleteById(id);
-        return "Cliente Deletado";
-    }
-
-        public List<ClienteResponseDto> listarClientes() {
-        return clienteRepository.findAll()
-                .stream()
-                .map(this::toResponseDto)
-                .collect(Collectors.toList());
-    }
- */

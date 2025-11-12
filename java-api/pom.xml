@@ -40,6 +40,12 @@
 		</dependency>
 
 		<dependency>
+  <groupId>com.microsoft.sqlserver</groupId>
+  <artifactId>mssql-jdbc</artifactId>
+  <version>12.6.0.jre11</version> <!-- ou mais recente -->
+	</dependency>
+
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
