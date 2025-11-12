@@ -1,8 +1,10 @@
 import { saveData, loadData } from './storage.js';
 import { getNewZIndex } from './janelas.js';
 
+let currentEditingNoteId = null; // null = Criando, ou um ID = Editando
+
 // Chave de storage específica deste módulo
-const NOTES_STORAGE_KEY = 'booke-anotacoes';
+let NOTES_STORAGE_KEY = '';
 
 // Seletores (só os que este módulo usa)
 const noteListArea = document.getElementById('note-list-area');
@@ -27,36 +29,30 @@ function saveNotes(notesArray) {
 
 function renderNotes() {
     const notes = loadNotes();
-    
-    // Limpa a lista antiga
     noteListArea.innerHTML = ''; 
 
-    // Cria o HTML para cada nota
     notes.forEach(note => {
-        //   vvv--- ADICIONAMOS O BOTÃO "X" AQUI ---vvv
         const noteHTML = `
             <div class="note-item" data-note-id="${note.id}">
                 <span class="note-delete-btn" data-note-id="${note.id}">X</span>
                 <p>${note.title}</p>
-                <button class="note-folder-btn">
+                <button class="note-folder-btn" data-note-id="${note.id}">
                     <img src="./assets/neon-folder.png" alt="Pasta">
                 </button>
             </div>
         `;
-        // Adiciona o HTML na área da lista
         noteListArea.innerHTML += noteHTML;
     });
     
-    // --- IMPORTANTE: ADICIONA OS LISTENERS DEPOIS DE RENDERIZAR ---
-    // Encontra todos os novos botões "X" que acabamos de criar
+    // Listener de deletar
     noteListArea.querySelectorAll('.note-delete-btn').forEach(button => {
         button.addEventListener('click', handleDeleteNote);
     });
 
-    // (O seu código futuro para abrir a pasta também viria aqui)
-    // noteListArea.querySelectorAll('.note-folder-btn').forEach(button => {
-    //    button.addEventListener('click', handleOpenNote);
-    // });
+    // abrir e edita
+    noteListArea.querySelectorAll('.note-folder-btn').forEach(button => {
+        button.addEventListener('click', openModalForEdit);
+    });
 }
 
 /**
@@ -96,48 +92,133 @@ function handleSaveNote() {
         return;
     }
 
-    const newNote = {
-        id: Date.now(),
-        title: title,
-        content: content
-    };
+    let notes = loadNotes();
 
-    const notes = loadNotes();
-    notes.push(newNote);
-    saveNotes(notes);
+    if (currentEditingNoteId === null) {
+        const newNote = {
+            id: Date.now(),
+            title: title,
+            content: content
+        };
+        notes.push(newNote);
+    } else {
+        notes = notes.map(note => {
+            if (note.id == currentEditingNoteId) {
+                // Retorna a nota ATUALIZADA
+                return { 
+                    ...note, // Mantém o ID original
+                    title: title, 
+                    content: content 
+                };
+            }
+            // Retorna as outras notas sem alteração
+            return note;
+        });
+    }
 
-    renderNotes();
-    closeNewNoteModal();
+    saveNotes(notes);  // Salva o array modificado
+    renderNotes();     // Atualiza a tela
+    closeNewNoteModal(); // Fecha o modal
 }
 
-function openNewNoteModal() {
-    newNoteTitleInput.value = '';
-    newNoteContentInput.value = '';
-    
+function _openModal() {
     // zindex
     subModalOverlay.style.zIndex = getNewZIndex();
     modalNovaAnotacao.style.zIndex = getNewZIndex();
 
     subModalOverlay.classList.remove('hidden');
     modalNovaAnotacao.classList.remove('hidden');
+
+    newNoteTitleInput.focus(); // Foca no título
+}
+
+/**
+ * ATUALIZADO: Prepara o modal para CRIAR uma nova nota.
+ */
+function openModalForCreate() {
+    currentEditingNoteId = null; // Garante que estamos criando
+    newNoteTitleInput.value = '';
+    newNoteContentInput.value = '';
+    
+    _openModal(); // Chama a função base
+}
+function openModalForEdit(e) {
+    const noteIdToEdit = e.currentTarget.dataset.noteId;
+    
+    const notes = loadNotes();
+    const note = notes.find(n => n.id == noteIdToEdit);
+
+    if (!note) {
+        alert('Erro: Anotação não encontrada.');
+        return;
+    }
+    currentEditingNoteId = note.id; 
+    newNoteTitleInput.value = note.title;
+    newNoteContentInput.value = note.content;
+
+    _openModal(); // Chama a função base
 }
 
 function closeNewNoteModal() {
     subModalOverlay.classList.add('hidden');
     modalNovaAnotacao.classList.add('hidden');
+    currentEditingNoteId = null;
 }
 
 // --- Event Listeners ---
+function openModalForEdit(e) {
+    // Pega o ID do botão da pasta que foi clicado
+    const noteIdToEdit = e.currentTarget.dataset.noteId;
+    
+    // Carrega as notas e encontra a nota certa
+    const notes = loadNotes();
+    const note = notes.find(n => n.id == noteIdToEdit);
 
+    if (!note) {
+        alert('Erro: Anotação não encontrada.');
+        return;
+    }
+
+    currentEditingNoteId = note.id; 
+    
+
+    newNoteTitleInput.value = note.title;
+    newNoteContentInput.value = note.content;
+    
+
+    openNewNoteModal_base(); 
+}function openModalForEdit(e) {
+    // Pega o ID do botão da pasta que foi clicado
+    const noteIdToEdit = e.currentTarget.dataset.noteId;
+    
+    // Carrega as notas e encontra a nota certa
+    const notes = loadNotes();
+    const note = notes.find(n => n.id == noteIdToEdit);
+
+    if (!note) {
+        alert('Erro: Anotação não encontrada.');
+        return;
+    }
+
+    currentEditingNoteId = note.id; 
+    
+
+    newNoteTitleInput.value = note.title;
+    newNoteContentInput.value = note.content;
+
+    openNewNoteModal_base(); 
+}
 // funçao exportada
-export function initAnotacoes() {
-    btnShowNewNoteModal.addEventListener('click', openNewNoteModal);
+export function initAnotacoes(userId) { 
+
+    NOTES_STORAGE_KEY = `booke_anotacoes_${userId}`;
+
+    btnShowNewNoteModal.addEventListener('click', openModalForCreate); 
     btnSaveNewNote.addEventListener('click', handleSaveNote);
     btnCancelNewNote.addEventListener('click', closeNewNoteModal);
     btnCancelNewNote2.addEventListener('click', closeNewNoteModal);
     
-    // Carga inicial
-    renderNotes();
+    renderNotes(); 
 
-    console.log("Módulo de Anotações Inicializado.");
+    console.log(`Módulo de Anotações Inicializado para ${userId}.`);
 }

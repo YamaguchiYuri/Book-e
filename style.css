@@ -142,9 +142,15 @@ input[type="password"] {
     top: 2px; /* Simula o botão sendo afundado */
     box-shadow: none; /* Remove a sombra ao clicar */
 }
+#lblUsername{
+    position:absolute;
+    top:15%;
+    left: 20px;
+}
 #lblPassword{
-    position:relative;
-    top:25%
+    position:absolute;
+    top:43%;
+    left:20px;
 }
 
 .btnBottom{
@@ -176,4 +182,16 @@ input[type="password"] {
 }
 #btnEsqueceu:hover{
     color: #142726;
+}
+#aviso {
+    position: absolute;
+    top: 86%;
+    left: 20px; 
+    right: 20px;
+    
+    text-align: center; 
+    font-size: 10px;
+    color: rgb(255, 243, 243);
+    
+
 }

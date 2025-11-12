@@ -79,20 +79,36 @@ form.addEventListener('submit', (event) => {
     );
 
     // 6. Verifica se o login foi bem-sucedido
-    if (foundUser) {
-        // SUCESSO!
-        alert('Login bem-sucedido! Redirecionando...');
-        
-        // ** O PASSO MAIS IMPORTANTE **
-        // Salva quem está logado para as próximas páginas saberem
-        localStorage.setItem('currentUser', foundUser.username);
+if (foundUser) {
+    // SUCESSO!
+    alert('Login bem-sucedido! Redirecionando...');
+    
+    // 1. Salva quem está logado (como antes)
+    localStorage.setItem('currentUser', foundUser.username);
 
-        // Manda o usuário para a próxima tela
-        window.location.href = '/formulario.html'; 
-        // (Se o formulário já foi preenchido, mude para /app.html)
+    // 2. Pega o ID do usuário que acabou de logar
+    const userId = foundUser.username;
+
+    // 3. Monta a "chave" para verificar se o formulário existe
+    // (Esta chave é a mesma que o formulario.js vai usar para salvar)
+    const formKey = `booke_form_${userId}`; // Ex: 'booke_form_yuri'
+    
+    // 4. Verifica no localStorage se os dados do formulário já existem
+    const formData = localStorage.getItem(formKey);
+
+    // 5. Redirecionamento inteligente
+    if (formData) {
+        // Se 'formData' NÃO é nulo (ou seja, existe), o usuário já preencheu.
+        console.log('Formulário já preenchido. Indo para o app.');
+        window.location.href = '/app.html';
+    } else {
+        // Se 'formData' é nulo, é o primeiro login após o cadastro.
+        console.log('Primeiro login. Indo para o formulário.');
+        window.location.href = '/formulario.html';
+    }
 
     } else {
-        // FALHA
-        aviso.innerHTML = 'Usuário ou senha incorretos.';
+    // FALHA
+    aviso.innerHTML = 'Usuário ou senha incorretos.';
     }
 });
