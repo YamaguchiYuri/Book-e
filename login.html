@@ -17,14 +17,19 @@
                 <span></span> <span class="close_button">X</span>
             </div>
             <div class="dialog_content">
-                <label for="username">USUARIO</label>
-                <input type="text" id="username"/>
-                <label id="lblPassword" for="password">SENHA</label>
-                <input type="password" id="password"/>
-                <div class="dialog_buttons">
-                    <button class="btn btnEntrar">ENTRAR</button>
-                    <button class="btn btnCancelar">CANCELAR</button>
-                </div>
+                <form id="login-form"> 
+                    <label for="username">USUARIO</label>
+                    <input type="text" id="username"/>
+                    <label id="lblPassword" for="password">SENHA</label>
+                    <input type="password" id="password"/>
+                    
+                    <p id="aviso"></p> 
+                    
+                    <div class="dialog_buttons">
+                        <button type="submit" class="btn btnEntrar">ENTRAR</button> 
+                        <button type="button" class="btn btnCancelar">CANCELAR</button>
+                    </div>
+                </form>
             </div>
             <div class="btnBottom">
                 <button id="btnCadastrar">Cadastre-se</button>
