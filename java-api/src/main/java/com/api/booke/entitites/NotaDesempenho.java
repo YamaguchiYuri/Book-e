@@ -17,7 +17,7 @@ public class NotaDesempenho {
     private Long id_nota_desempenho;
 
     @Column(nullable = false)
-    private Integer nota_cadastro;
+    private float nota_cadastro;
 
     @ManyToOne
     @JoinColumn(name = "id_materia", nullable = false)

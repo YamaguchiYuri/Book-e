@@ -26,8 +26,8 @@ public class Usuario {
     @Column(name = "nickname_user", length = 20)
     private String nickname_user;
 
-    @Column(name = "passwordkey_user", columnDefinition = "binary(32)")
-    private byte[] passwordkey_user;
+    @Column(name = "passwordkey_user", length=100)
+    private String passwordkey_user;
 
     @Column(length = 100, nullable = false)
     private String email;
@@ -38,7 +38,7 @@ public class Usuario {
     @Column(name = "dt_criado_em", updatable = false)
     private LocalDateTime data_criado_em = LocalDateTime.now();
 
-    public Usuario(String nickname_user, byte[] passwordkey_user, String email, LocalDate data_nasciment_em) {
+    public Usuario(String nickname_user, String passwordkey_user, String email, LocalDate data_nasciment_em) {
         this.nickname_user = nickname_user;
         this.passwordkey_user = passwordkey_user;
         this.email = email;
