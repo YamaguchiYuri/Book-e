@@ -251,13 +251,6 @@ body {
     right: -3px;
 }
 
-/* Layout da Janela de Agenda */
-.content-agenda {
-    height: 250px;
-}
-.content-agenda p {
-    font-size: 14px;
-}
 
 /* Layout da Janela de Notas */
 .content-notas {
@@ -266,3 +259,88 @@ body {
 .content-notas p {
     font-weight: bold;
 }
+
+/* Layout da Janela de Agenda */
+.content-agenda {
+    height: 250px;
+}
+.content-agenda p {
+    font-size: 14px;
+}
+
+.content-agenda {
+    height: 450px; /* Janela um pouco mais alta */
+    padding: 10px;
+    display: flex;
+    flex-direction: column; /* Coluna: [Lista] e [Formulário] */
+}
+
+/* Área da Lista (agora #lista-agenda) */
+#lista-agenda {
+    flex-grow: 1; /* Ocupa todo o espaço disponível */
+    overflow-y: auto; /* Scroll se a lista for longa */
+    padding: 10px;
+    margin-bottom: 15px;
+    
+    /* Reutilizando seu estilo de fundo de input */
+    background-color: #94add3;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+/* (O estilo .agenda-item, .agenda-item-details, etc. 
+   pode continuar igual, pois são classes) */
+
+/* Cada item (linha) na lista da agenda */
+.agenda-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #b3d2ff;
+    box-shadow: 0 2px 0 #9f85d4, 2px 0 0 #9f85d4, -2px 0 0 #9f85d4, 0 -2px 0 #9f85d4;
+}
+.agenda-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 11px;
+    text-shadow: 1px 1px 1px #555;
+}
+.agenda-item-delete {
+    font-size: 14px;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Área do Formulário de Adição (agora #inserir-agenda) */
+#inserir-agenda {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Reseta os inputs para funcionarem no layout */
+#inserir-agenda input[type="text"],
+#inserir-agenda input[type="date"] {
+    position: static; /* Reseta o position:absolute */
+    width: 100%;
+    
+    /* Reutiliza estilos do seu formulario.css */
+    color: azure;
+    background-color: #94add3;
+    border: none;
+    outline: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+/* Reseta o botão */
+#inserir-agenda .btn {
+    position: static; 
+    background-color: #a0f386; /* Cor verde */
+}
+

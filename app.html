@@ -26,14 +26,28 @@
         </div>
 
     </main>
-
+<!--essa parte da agenda-->
     <div id="modal-agenda" class="pixel_dialog hidden">
         <div class="dialog_header">
             <span>AGENDA ACADEMICA</span>
             <span class="close_button">X</span>
         </div>
+        
         <div class="dialog_content content-agenda">
-            <p>Sua próxima prova é...</p>
+            
+            <div id="lista-agenda">
+                </div>
+
+            <div id="inserir-agenda">
+                <label for="add-tipo">Tipo de Compromisso:</label>
+                <input type="text" id="add-tipo" placeholder="Ex: Prova, Entrega...">
+                
+                <label for="add-data">Data:</label>
+                <input type="date" id="add-data">
+                
+                <button id="btnAdd-agenda" class="btn btnMateria">Adicionar</button>
+            </div>
+            
         </div>
     </div>
 

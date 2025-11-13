@@ -165,49 +165,7 @@ function closeNewNoteModal() {
     currentEditingNoteId = null;
 }
 
-// --- Event Listeners ---
-function openModalForEdit(e) {
-    // Pega o ID do botão da pasta que foi clicado
-    const noteIdToEdit = e.currentTarget.dataset.noteId;
-    
-    // Carrega as notas e encontra a nota certa
-    const notes = loadNotes();
-    const note = notes.find(n => n.id == noteIdToEdit);
 
-    if (!note) {
-        alert('Erro: Anotação não encontrada.');
-        return;
-    }
-
-    currentEditingNoteId = note.id; 
-    
-
-    newNoteTitleInput.value = note.title;
-    newNoteContentInput.value = note.content;
-    
-
-    openNewNoteModal_base(); 
-}function openModalForEdit(e) {
-    // Pega o ID do botão da pasta que foi clicado
-    const noteIdToEdit = e.currentTarget.dataset.noteId;
-    
-    // Carrega as notas e encontra a nota certa
-    const notes = loadNotes();
-    const note = notes.find(n => n.id == noteIdToEdit);
-
-    if (!note) {
-        alert('Erro: Anotação não encontrada.');
-        return;
-    }
-
-    currentEditingNoteId = note.id; 
-    
-
-    newNoteTitleInput.value = note.title;
-    newNoteContentInput.value = note.content;
-
-    openNewNoteModal_base(); 
-}
 // funçao exportada
 export function initAnotacoes(userId) { 
 
