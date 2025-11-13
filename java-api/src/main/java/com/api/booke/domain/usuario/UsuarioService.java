@@ -1,5 +1,6 @@
 package com.api.booke.domain.usuario;
 
+import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.util.List;
 import java.util.UUID;
@@ -10,12 +11,15 @@ import org.springframework.stereotype.Service;
 
 import com.api.booke.domain.usuario.dto.*;
 import com.api.booke.entitites.Usuario;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private UsuarioResponseDto toResponseUsuarioDTO (Usuario usuario){
         if(usuario == null) return null;
@@ -33,7 +37,9 @@ public class UsuarioService {
 
         usuario.setNickname_user(dto.getNickname_user());
         usuario.setEmail(dto.getEmail());
-        usuario.setDt_nasciment_em(dto.getDt_nasciment_em());
+
+        String hashedPassword = passwordEncoder.encode(dto.getPasswordkey_user());
+        usuario.setPasswordkey_user(hashedPassword);
 
         return toResponseUsuarioDTO(usuarioRepository.save(usuario));
     }

@@ -21,8 +21,8 @@ public class Materia {
     private UniversidadeUsuario universidadeUsuario;
 
     @Column(nullable = false)
-    private Integer semestre_material;
+    private int semestre_materia;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 40, nullable = false)
     private String nome_materia;
 }

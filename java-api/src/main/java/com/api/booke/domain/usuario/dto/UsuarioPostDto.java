@@ -3,10 +3,7 @@ package com.api.booke.domain.usuario.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
@@ -16,8 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class UsuarioPostDto {
     private String nickname_user;
     private String email;
-    private LocalDate dt_nasciment_em;
+    private String passwordkey_user;
 }
