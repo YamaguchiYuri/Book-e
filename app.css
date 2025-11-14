@@ -344,3 +344,58 @@ body {
     background-color: #a0f386; /* Cor verde */
 }
 
+/*Widget da agenda*/
+#agenda-widget {
+    /* Posicionamento */
+    position: fixed; /* Fica fixo na tela */
+    top: 20px;
+    right: 20px;
+    
+    /* Tamanho */
+    width: 250px; /* Mais estreito que os modais */
+    height: auto; /* Altura automática */
+    
+    /* Ordem (acima do desktop, abaixo dos modais) */
+    z-index: 5;
+    
+    /* Remove a centralização que vem do .pixel_dialog */
+    transform: none; 
+    
+    /* Garante que não é "arrastável" */
+    cursor: default !important;
+}
+
+#agenda-widget .dialog_header {
+    cursor: default; /* Remove o cursor de "move" */
+    font-size: 12px;
+    text-align: center;
+    justify-content: center; /* Centraliza o título */
+}
+
+/* Conteúdo do widget */
+.content-widget-agenda {
+    height: auto; /* Altura baseada no conteúdo */
+    padding: 10px;
+    font-size: 10px;
+    max-height: 200px; /* Altura máxima antes de rolar */
+    overflow-y: auto;
+}
+
+#agenda-widget-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#agenda-widget-list li {
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #94add3; /* Reutilizando a cor */
+    box-shadow: 0 1px 0 #9f85d4;
+    display: flex;
+    gap: 5px;
+}
+
+#agenda-widget-list li strong {
+    color: #f0f0f0;
+}
