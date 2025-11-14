@@ -81,68 +81,63 @@ inpTodos.forEach(function(inp){
 
 //Teste de cadastro
 
-form.addEventListener('submit', (event) => {
-    event.preventDefault(); // Impede o envio do formulário
+form.addEventListener('submit', async (event) => { 
+    event.preventDefault(); 
 
-    // 1. Pega todos os valores dos inputs
     const email = inpEmail.value;
     const username = inpUsername.value;
     const password = inpPassword.value;
     const confirme = inpConfirme.value;
 
-    // 2. Validação dos campos
+    // 2. Validação do Front-end (você já tinha, está ótimo)
     if (!email || !username || !password || !confirme) {
         aviso.innerHTML = 'Todos os campos são obrigatórios.';
-        return; // Para a execução
+        return; 
     }
-
     if (password !== confirme) {
         aviso.innerHTML = 'As senhas não conferem.';
-        return; // Para a execução
+        return; 
     }
-
     if (password.length < 8) {
         aviso.innerHTML = 'A senha deve ter no mínimo 8 caracteres.';
-        return; // Para a execução
+        return; 
     }
 
-    // 3. Carrega os usuários existentes
-    const users = loadUsers();
 
-    // 4. Verifica se o usuário ou email já existem
-    const userExists = users.find(user => user.username === username || user.email === email);
-
-    if (userExists) {
-        aviso.innerHTML = 'Usuário ou email já cadastrado.';
-        return; // Para a execução
-    }
-
-    // 5. Se tudo estiver OK, cria o novo usuário
-    const newUser = {
-        id: Date.now(), // Um ID único simples
+    const userData = {
+        nickname_user: username,
         email: email,
-        username: username,
-        password: password // Nota: Em app real, não salvaríamos a senha assim :)
+        passwordkey_user: password 
     };
 
-    // 6. Adiciona o novo usuário à lista e salva
-    users.push(newUser);
-    saveUsers(users);
 
-    // 7. Sucesso e redirecionamento (como seu código já fazia)
-    alert('Usuário cadastrado com sucesso! Redirecionando para o login...');
-    window.location.href = '/login.html';
+    try {
+        const response = await fetch('http://localhost:8081/api/usuarios/criar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
+
+
+        if (response.status === 201) { 
+
+            const novoUsuario = await response.json();
+            console.log('Sucesso:', novoUsuario);
+            alert('Usuário cadastrado com sucesso! Redirecionando para o login...');
+            window.location.href = '/login.html';
+        
+        } else {
+
+            const errorText = await response.text();
+            aviso.innerHTML = `Erro: ${errorText || 'Não foi possível cadastrar'}`;
+        }
+
+    } catch (error) {
+ 
+        console.error('Erro na requisição:', error);
+        aviso.innerHTML = 'Não foi possível conectar ao servidor.';
+    }
 });
 
-
- //Carrega a lista de todos os usuários do localStorage
-
-function loadUsers() {
-    const usersJSON = localStorage.getItem('booke_users');
-    return usersJSON ? JSON.parse(usersJSON) : [];
-}
-
- //Salva a lista de usuários no localStorage.
-function saveUsers(usersArray) {
-    localStorage.setItem('booke_users', JSON.stringify(usersArray));
-}

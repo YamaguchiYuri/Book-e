@@ -5,6 +5,8 @@ import java.time.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Optional;
+import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UsuarioService {
-
+    
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -42,6 +44,20 @@ public class UsuarioService {
         usuario.setPasswordkey_user(hashedPassword);
 
         return toResponseUsuarioDTO(usuarioRepository.save(usuario));
+    }
+    public UsuarioResponseDto autenticar(String nickname, String senhaPura) throws AuthenticationException {
+        Usuario usuario = usuarioRepository.findByNickname_user(nickname)
+            .orElseThrow(() -> 
+                new AuthenticationException("Usuário ou senha inválidos."));
+
+        if (passwordEncoder.matches(senhaPura, usuario.getPasswordkey_user())) {
+            
+
+            return toResponseUsuarioDTO(usuario);
+        } else {
+            // Senha não bate
+            throw new AuthenticationException("Usuário ou senha inválidos.");
+        }
     }
 
     public UsuarioResponseDto alterarUsuario(Long id, UsuarioPutDTO dto){
@@ -72,3 +88,4 @@ public class UsuarioService {
             .collect(Collectors.toList());
     }
 }
+

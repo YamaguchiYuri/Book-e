@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.booke.domain.usuario.UsuarioRepository;
 import com.api.booke.domain.usuario.UsuarioService;
+import com.api.booke.domain.usuario.dto.LoginDto;
 import com.api.booke.domain.usuario.dto.UsuarioPostDto;
 import com.api.booke.domain.usuario.dto.UsuarioPutDTO;
 import com.api.booke.domain.usuario.dto.UsuarioResponseDto;
@@ -41,7 +42,22 @@ import com.api.booke.domain.usuario.dto.UsuarioResponseDto;
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
-
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUsuario(@RequestBody LoginDto dto) {
+        try {
+            UsuarioResponseDto usuario = usuarioService.autenticar(
+                dto.getNickname_user(), dto.getPasswordkey_user()
+            );
+            
+            // Sucesso (Status 200 OK)
+            return ResponseEntity.ok(usuario); 
+            
+        } catch (Exception e) {
+            // Falha (Status 401 Unauthorized)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body("Usuário ou senha inválidos.");
+        }
+    }
     @Autowired
     private UsuarioRepository usuarioRepository; 
 
