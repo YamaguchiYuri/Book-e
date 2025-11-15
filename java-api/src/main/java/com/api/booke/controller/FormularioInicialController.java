@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/formulario")
+@RequestMapping("api/formulario")
 @RequiredArgsConstructor
 
 public class FormularioInicialController {
 
     private final FormularioInicialService formularioInicialService;
 
-    @PostMapping
+    @PostMapping("/enviar")
     public ResponseEntity<FormularioInicialResponseDto> processarFormulario(
             @RequestBody FormularioInicialRequestDto dto) {
 
