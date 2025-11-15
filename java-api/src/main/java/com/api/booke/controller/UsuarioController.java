@@ -42,22 +42,7 @@ import com.api.booke.domain.usuario.dto.UsuarioResponseDto;
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUsuario(@RequestBody LoginDto dto) {
-        try {
-            UsuarioResponseDto usuario = usuarioService.autenticar(
-                dto.getNickname_user(), dto.getPasswordkey_user()
-            );
-            
-            // Sucesso (Status 200 OK)
-            return ResponseEntity.ok(usuario); 
-            
-        } catch (Exception e) {
-            // Falha (Status 401 Unauthorized)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                .body("Usuário ou senha inválidos.");
-        }
-    }
+
     @Autowired
     private UsuarioRepository usuarioRepository; 
 
@@ -108,5 +93,22 @@ public class UsuarioController {
             .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Usuário com ID " + id + " não encontrado."));
 }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUsuario(@RequestBody LoginDto dto) {
+        try {
+            UsuarioResponseDto usuario = usuarioService.autenticar(
+                dto.getNicknameuser(), dto.getPasswordkey_user()
+            );
+            
+            // Sucesso (Status 200 OK)
+            return ResponseEntity.ok(usuario); 
+            
+        } catch (Exception e) {
+            // Falha (Status 401 Unauthorized)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body("Usuário ou senha inválidos.");
+        }
+    }
     
 }

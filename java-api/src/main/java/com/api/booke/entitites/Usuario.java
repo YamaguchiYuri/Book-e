@@ -23,8 +23,8 @@ public class Usuario {
     @Column(name = "id_user")
     private Long id_user;
 
-    @Column(name = "nickname_user", length = 20)
-    private String nickname_user;
+    @Column(length = 20, unique = true)
+    private String nicknameuser;
 
     @Column(name = "passwordkey_user", length=100)
     private String passwordkey_user;
@@ -38,8 +38,8 @@ public class Usuario {
     @Column(name = "dt_criado_em", updatable = false)
     private LocalDateTime data_criado_em = LocalDateTime.now();
 
-    public Usuario(String nickname_user, String passwordkey_user, String email, LocalDate data_nasciment_em) {
-        this.nickname_user = nickname_user;
+    public Usuario(String nicknameuser, String passwordkey_user, String email, LocalDate data_nasciment_em) {
+        this.nicknameuser = nicknameuser;
         this.passwordkey_user = passwordkey_user;
         this.email = email;
         this.dt_nasciment_em = data_nasciment_em;

@@ -3,7 +3,6 @@ package com.api.booke.domain.usuario;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Optional;
 import javax.naming.AuthenticationException;
@@ -27,7 +26,7 @@ public class UsuarioService {
         if(usuario == null) return null;
         return new UsuarioResponseDto(
             usuario.getId_user(),
-            usuario.getNickname_user(),
+            usuario.getNicknameuser(),
             usuario.getEmail(),
             usuario.getDt_nasciment_em(),
             usuario.getData_criado_em()
@@ -37,7 +36,12 @@ public class UsuarioService {
     public UsuarioResponseDto createUsuario(UsuarioPostDto dto){
         Usuario usuario = new Usuario();
 
-        usuario.setNickname_user(dto.getNickname_user());
+            // Verifica se nickname já existe
+        if (usuarioRepository.findByNicknameuser(dto.getNicknameuser()).isPresent()) {
+        throw new IllegalArgumentException("Nickname já está em uso.");
+        }
+        
+        usuario.setNicknameuser(dto.getNicknameuser());
         usuario.setEmail(dto.getEmail());
 
         String hashedPassword = passwordEncoder.encode(dto.getPasswordkey_user());
@@ -46,7 +50,7 @@ public class UsuarioService {
         return toResponseUsuarioDTO(usuarioRepository.save(usuario));
     }
     public UsuarioResponseDto autenticar(String nickname, String senhaPura) throws AuthenticationException {
-        Usuario usuario = usuarioRepository.findByNickname_user(nickname)
+        Usuario usuario = usuarioRepository.findByNicknameuser(nickname)
             .orElseThrow(() -> 
                 new AuthenticationException("Usuário ou senha inválidos."));
 
@@ -64,9 +68,12 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + id + " não encontrado."));
 
-        usuario.setNickname_user(dto.getNickname_user());
+        usuario.setNicknameuser(dto.getNicknameuser());
         usuario.setEmail(dto.getEmail());
         usuario.setDt_nasciment_em(dto.getDt_nasciment_em());
+
+        String hashedPassword = passwordEncoder.encode(dto.getPasswordkey_user());
+        usuario.setPasswordkey_user(hashedPassword);
 
         return toResponseUsuarioDTO(usuarioRepository.save(usuario));
     }

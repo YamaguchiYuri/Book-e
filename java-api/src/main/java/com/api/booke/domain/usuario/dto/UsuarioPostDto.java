@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class UsuarioPostDto {
-    private String nickname_user;
+    private String nicknameuser;
     private String email;
     private String passwordkey_user;
 }

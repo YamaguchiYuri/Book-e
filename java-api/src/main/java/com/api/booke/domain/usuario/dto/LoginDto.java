@@ -1,9 +1,13 @@
 package com.api.booke.domain.usuario.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginDto {
-    private String nickname_user;
+    private String nicknameuser;
     private String passwordkey_user;
 }
