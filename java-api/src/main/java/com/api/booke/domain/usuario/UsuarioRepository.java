@@ -7,5 +7,5 @@ import java.util.Optional;
 import com.api.booke.entitites.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Optional<Usuario> findByNickname_user(String nickname);
+    Optional<Usuario> findByNicknameuser(String nicknameuser);
 }

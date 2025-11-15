@@ -105,7 +105,7 @@ form.addEventListener('submit', async (event) => {
 
 
     const userData = {
-        nickname_user: username,
+        nicknameuser: username,
         email: email,
         passwordkey_user: password 
     };
