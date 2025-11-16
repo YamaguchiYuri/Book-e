@@ -399,3 +399,98 @@ body {
 #agenda-widget-list li strong {
     color: #f0f0f0;
 }
+
+/*layout da parte de notas*/
+.content-notas {
+    height: 500px; /* Janela mais alta para caber as notas */
+    padding: 10px;
+}
+
+#notas-list-area {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box; 
+    list-style: none;
+    overflow-y: auto; /* Scroll se a lista for longa */
+    
+    background-color: #94add3;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+/* cada matéria */
+.materia-card {
+    background-color: #b3d2ff;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 0 #9f85d4;
+}
+
+.materia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #9f85d4;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.materia-header h3 {
+    margin: 0;
+    font-size: 14px;
+    color: white;
+    text-shadow: 1px 1px 1px #555;
+}
+
+/* Status de Aprovado / Reprovado */
+.materia-header span {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 3px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+}
+
+.status-aprovado {
+    background-color: #2a9d8f; 
+    color: #fff;
+}
+.status-reprovado {
+    background-color: #e63946; 
+    color: #fff;
+}
+.status-neutro {
+    background-color: #94add3; 
+    color: #eee;
+}
+
+/* Área dos 4 inputs */
+.materia-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 colunas */
+    gap: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+.input-group label {
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.input-group input[type="number"] {
+    position: static;
+    width: 100%;
+    
+    color: azure;
+    background-color: #94add3;
+    border: none;
+    outline: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}

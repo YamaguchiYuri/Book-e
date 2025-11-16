@@ -22,4 +22,7 @@ public class NotaDesempenho {
     @ManyToOne
     @JoinColumn(name = "id_materia", nullable = false)
     private Materia materia;
+
+    @Column(length = 10, nullable = false)
+    private String tipo_nota;
 }
