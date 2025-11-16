@@ -17,7 +17,6 @@ if (!currentUserId) {
     initIcons();       
     
     initAnotacoes(currentUserId);   
-
     initAgenda(currentUserId);
     initAgendaWidget(currentUserId);
     console.log(`Aplicativo principal carregado para: ${currentUserId}`);

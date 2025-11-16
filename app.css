@@ -415,12 +415,11 @@ body {
     list-style: none;
     overflow-y: auto; /* Scroll se a lista for longa */
     
-    /* Reutilizando o estilo de fundo */
     background-color: #94add3;
     box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
 }
 
-/* "Card" de cada matéria */
+/* cada matéria */
 .materia-card {
     background-color: #b3d2ff;
     padding: 10px;
@@ -454,15 +453,15 @@ body {
 }
 
 .status-aprovado {
-    background-color: #2a9d8f; /* Verde */
+    background-color: #2a9d8f; 
     color: #fff;
 }
 .status-reprovado {
-    background-color: #e63946; /* Vermelho */
+    background-color: #e63946; 
     color: #fff;
 }
 .status-neutro {
-    background-color: #94add3; /* Cor neutra */
+    background-color: #94add3; 
     color: #eee;
 }
 
@@ -482,7 +481,6 @@ body {
     margin-bottom: 5px;
 }
 
-/* Reutiliza o estilo dos inputs do formulario.css! */
 .input-group input[type="number"] {
     position: static;
     width: 100%;
