@@ -23,6 +23,6 @@ public class NotaDesempenho {
     @JoinColumn(name = "id_materia", nullable = false)
     private Materia materia;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 30, nullable = false)
     private String tipo_nota;
 }
