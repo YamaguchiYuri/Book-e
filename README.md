@@ -30,8 +30,6 @@ O objetivo do Book-e é fornecer uma ferramenta prática, de fácil utilização
 * Organize seus estudos e tarefas de maneira eficiente.
 * Tome decisões conscientes sobre suas prioridades e metas acadêmicas.
 
-Diferente de ferramentas gerais como Google Agenda, Notion e Trello, o Book-e oferece funcionalidades específicas para o ambiente universitário, preenchendo lacunas dessas plataformas.
-
 ---
 
 ## Como Rodar o Projeto
