@@ -118,6 +118,7 @@ public List<MateriaFullResponseDto> getFullByUserId(Long idUser) {
 
                         uu.getUsuario().getId_user(),
                         uu.getUsuario().getNicknameuser()
+
                 );
             })
             .collect(Collectors.toList());

@@ -4,7 +4,7 @@ import { initNotas } from './notas.js';
 import { initAgenda } from './agenda.js';
 import { initAgendaWidget } from './widgetagenda.js';
 
-const currentUserId = localStorage.getItem('currentUser');
+const currentUserId = localStorage.getItem('currentUserId');
 
 if (!currentUserId) {
     // Se não houver usuário logado, chuta de volta para o login.

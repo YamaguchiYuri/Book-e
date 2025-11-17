@@ -1,5 +1,9 @@
 package com.api.booke.domain.materia.dto;
 
+import java.util.List;
+
+import com.api.booke.domain.notadesempenho.dto.NotaDesempenhoResponseDto;
+
 import lombok.*;
 
 @Data
@@ -21,4 +25,5 @@ public class MateriaFullResponseDto {
 
     private Long id_user;
     private String nickname_usuario;
+
 }

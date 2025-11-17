@@ -33,8 +33,9 @@ public class NotaDesempenhoService {
                 .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
 
         NotaDesempenho nota = new NotaDesempenho();
-        nota.setNota_cadastro((int) dto.getNota_cadastro()); // se quiser int mesmo
+        nota.setNota_cadastro(dto.getNota_cadastro());
         nota.setMateria(materia);
+        nota.setTiponota(dto.getTiponota());
 
         notaDesempenhoRepository.save(nota);
         return toResponse(nota);
@@ -51,8 +52,9 @@ public class NotaDesempenhoService {
         Materia materia = materiaRepository.findById(dto.getId_materia())
                 .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
 
-        nota.setNota_cadastro((int) dto.getNota_cadastro());
+        nota.setNota_cadastro(dto.getNota_cadastro());
         nota.setMateria(materia);
+        nota.setTiponota(dto.getTiponota());
 
         notaDesempenhoRepository.save(nota);
         return toResponse(nota);
@@ -106,7 +108,9 @@ public class NotaDesempenhoService {
         return new NotaDesempenhoResponseDto(
                 nota.getId_nota_desempenho(),
                 nota.getNota_cadastro(),
-                nota.getMateria().getId_materia()
+                nota.getMateria().getId_materia(),
+                nota.getTiponota()
+
         );
     }
 }

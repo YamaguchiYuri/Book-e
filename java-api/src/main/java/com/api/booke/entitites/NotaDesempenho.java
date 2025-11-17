@@ -24,5 +24,5 @@ public class NotaDesempenho {
     private Materia materia;
 
     @Column(length = 30, nullable = false)
-    private String tipo_nota;
+    private String tiponota;
 }

@@ -10,4 +10,5 @@ import lombok.*;
 public class NotaDesempenhoPostDto {
     private Long id_materia;
     private float nota_cadastro;
+    private String tiponota;
 }

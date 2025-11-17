@@ -1,92 +1,144 @@
-
-import { loadData, saveData } from './storage.js';
-
-
-let MATERIAS_API_ENDPOINT = ''; 
-let NOTAS_API_ENDPOINT = '';   
-
+// ======================================
+// 🚀 CONSTANTES & SELECTORS
+// ======================================
+const MATERIAS_API_URL = 'http://localhost:8081/api/materias';
+const NOTAS_API_URL = 'http://localhost:8081/api/notas';
 
 const notasListArea = document.getElementById('notas-list-area');
+const modalNotas = document.getElementById('modal-notas');
 
+let CURRENT_USER_ID = null;
 
-
-
-function loadMaterias() {
-    return loadData(MATERIAS_API_ENDPOINT); // Chama GET no endpoint
-}
-
-
-function saveNota(notaDto) {
-
-    return saveData(NOTAS_API_ENDPOINT, notaDto, 'POST');
-}
-
-
-function calculateMedia(notas) {
-
-    const p1 = parseFloat(notas.find(n => n.tipo_nota === 'P1')?.nota_cadastro) || 0;
-    const p2 = parseFloat(notas.find(n => n.tipo_nota === 'P2')?.nota_cadastro) || 0;
-    const a1 = parseFloat(notas.find(n => n.tipo_nota === 'A1')?.nota_cadastro) || 0;
-    const a2 = parseFloat(notas.find(n => n.tipo_nota === 'A2')?.nota_cadastro) || 0;
-
-    const media = (p1 + p2 + a1 + a2) / 4;
-    return media;
-}
-
-
-function updateMateriaStatus(materiaId) {
-    const card = notasListArea.querySelector(`.materia-card[data-materia-id="${materiaId}"]`);
-    if (!card) return;
-
-    const statusEl = card.querySelector('.materia-header span');
-
-    const grades = {
-        P1: parseFloat(card.querySelector('input[data-tipo="P1"]').value) || 0,
-        P2: parseFloat(card.querySelector('input[data-tipo="P2"]').value) || 0,
-        A1: parseFloat(card.querySelector('input[data-tipo="A1"]').value) || 0,
-        A2: parseFloat(card.querySelector('input[data-tipo="A2"]').value) || 0
-    };
-    
-    const media = (grades.P1 + grades.P2 + grades.A1 + grades.A2) / 4;
-    const statusText = `Média: ${media.toFixed(1)}`;
-
-    if (media >= 6.0) {
-        statusEl.textContent = `${statusText} (Aprovado)`;
-        statusEl.className = 'status-aprovado';
-    } else {
-        statusEl.textContent = `${statusText} (Reprovado)`;
-        statusEl.className = 'status-reprovado';
+// ======================================
+// 🚀 FUNÇÕES DE ACESSO À API
+// ======================================
+async function apiGet(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro na API GET (${response.status}): ${errorText || response.statusText}`);
     }
+    return response.json();
+}
+
+async function apiSend(url, data, method) {
+    const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : null
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro na API ${method} (${response.status}): ${errorText || response.statusText}`);
+    }
+
+    // Se não tiver corpo ou status 204, não tenta fazer .json()
+    const contentType = response.headers.get('Content-Type');
+    if (!contentType || !contentType.includes('application/json')) return null;
+
+    return response.json();
 }
 
 
-async function renderNotas() {
-    notasListArea.innerHTML = '<p style="color:white;">Carregando matérias...</p>';
-    
+// Funções específicas da API
+function loadMaterias(userId) {
+    return apiGet(`${MATERIAS_API_URL}/buscar/${userId}`);
+}
+function loadNotasDaMateria(materiaId) {
+    return apiGet(`${NOTAS_API_URL}/materia/${materiaId}`);
+}
+function createNota(notaDto) {
+    return apiSend(NOTAS_API_URL, notaDto, 'POST');
+}
+function deleteNota(notaId) {
+    return apiSend(`${NOTAS_API_URL}/${notaId}`, null, 'DELETE');
+}
+
+// ======================================
+// 🧠 LÓGICA DE NEGÓCIO
+// ======================================
+function calculateMedia(notas) {
+    if (!notas || notas.length === 0) return 0;
+    const totalNotas = notas.reduce((sum, nota) => sum + (parseFloat(nota.nota_cadastro) || 0), 0);
+    return totalNotas / notas.length;
+}
+
+// ======================================
+// ⚙️ CONTROLE DO MODAL
+// ======================================
+function openNotasModal() {
+    if (modalNotas) modalNotas.classList.remove('hidden');
+}
+function closeNotasModal() {
+    if (modalNotas) modalNotas.classList.add('hidden');
+}
+
+// ======================================
+// ✨ RENDERIZAÇÃO & UI
+// ======================================
+async function getAddNotaFormHTML(userId) {
     let materias;
     try {
-
-        materias = await loadMaterias();
+        materias = await loadMaterias(userId);
     } catch (error) {
-        notasListArea.innerHTML = `<p style="color:red;">Erro ao carregar matérias: ${error.message}</p>`;
+        return `<li class="add-nota-form-container">
+            <p style="color:red; font-size:10px; padding: 10px;">Erro ao carregar matérias: ${error.message}</p>
+        </li>`;
+    }
+
+    const materiaOptions = materias.map(m => `<option value="${m.id_materia}">${m.nome_materia}</option>`).join('');
+
+    return `<li class="add-nota-form-container">
+        <h3>ADICIONAR NOVA NOTA</h3>
+        <form id="add-nota-form">
+            <div class="input-group flex-grow-2">
+                <label>MATÉRIA</label>
+                <select name="materiaId" required>
+                    <option value="">Selecione</option>
+                    ${materiaOptions}
+                </select>
+            </div>
+            <div class="input-group">
+                <label>TIPO</label>
+                <select name="tipoNota" required>
+                    <option value="">Tipo</option>
+                    <option value="P1">P1</option>
+                    <option value="P2">P2</option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>NOTA</label>
+                <input type="number" name="valor" min="0" max="10" step="0.1" placeholder="0.0" required>
+            </div>
+            <button type="submit" class="btn">Salvar</button>
+        </form>
+    </li>`;
+}
+
+async function renderNotas(userId) {
+    const addFormHTML = await getAddNotaFormHTML(userId);
+
+    let materias;
+    try {
+        materias = await loadMaterias(userId);
+        if (!materias || materias.length === 0) {
+            materias = [];
+        }
+        const notasDeTodas = await Promise.all(materias.map(m => loadNotasDaMateria(m.id_materia)));
+        materias.forEach((m, i) => m.notas = notasDeTodas[i]);
+    } catch (error) {
+        notasListArea.innerHTML = addFormHTML + `<li style="color:red; font-size:10px; text-align:center;">Erro ao carregar dados: ${error.message}</li>`;
         return;
     }
 
-    notasListArea.innerHTML = ''; 
-
-    if (materias.length === 0) {
-        notasListArea.innerHTML = '<p style="color:white;">Nenhuma matéria encontrada. (Verifique o formulário)</p>';
-        return;
-    }
-
-
-    materias.forEach(materia => {
-        const media = calculateMedia(materia.notas); 
-        
+    let materiasHTML = materias.map(materia => {
+        const media = calculateMedia(materia.notas || []);
         let statusClass = 'status-neutro';
         let statusText = `Média: ${media.toFixed(1)}`;
-        
-        if (materia.notas.length > 0) { 
+        if (materia.notas?.length) {
             if (media >= 6.0) {
                 statusClass = 'status-aprovado';
                 statusText += ' (Aprovado)';
@@ -96,98 +148,99 @@ async function renderNotas() {
             }
         }
 
-        const li = document.createElement('li');
-        li.className = 'materia-card';
- 
-        li.dataset.materiaId = materia.id_materia; 
+        const notasFormatadas = (materia.notas || []).map(n =>
+            `<li data-nota-id="${n.id_nota_desempenho}">
+                ${n.tiponota}: <strong>${n.nota_cadastro.toFixed(1)}</strong>
+                <span class="delete-nota-btn" data-nota-id="${n.id_nota_desempenho}">[DEL]</span>
+            </li>`
+        ).join('');
 
-      
-        const getNotaVal = (tipo) => materia.notas.find(n => n.tipo_nota === tipo)?.nota_cadastro || '';
-
-        li.innerHTML = `
+        return `<li class="materia-card" data-materia-id="${materia.id_materia}">
             <div class="materia-header">
                 <h3>${materia.nome_materia}</h3>
                 <span class="${statusClass}">${statusText}</span>
             </div>
-            <div class="materia-inputs">
-                <div class="input-group">
-                    <label>Prova 1</label>
-                    <input type="number" min="0" max="10" step="0.1" 
-                           value="${getNotaVal('P1')}" 
-                           data-materia-id="${materia.id_materia}" data-tipo="P1">
-                </div>
-                <div class="input-group">
-                    <label>Prova 2</label>
-                    <input type="number" min="0" max="10" step="0.1" 
-                           value="${getNotaVal('P2')}" 
-                           data-materia-id="${materia.id_materia}" data-tipo="P2">
-                </div>
-                <div class="input-group">
-                    <label>Ativ. 1</label>
-                    <input type="number" min="0" max="10" step="0.1" 
-                           value="${getNotaVal('A1')}" 
-                           data-materia-id="${materia.id_materia}" data-tipo="A1">
-                </div>
-                <div class="input-group">
-                    <label>Ativ. 2</label>
-                    <input type="number" min="0" max="10" step="0.1" 
-                           value="${getNotaVal('A2')}" 
-                           data-materia-id="${materia.id_materia}" data-tipo="A2">
-                </div>
+            <div class="materia-notas-lista">
+                <ul>
+                    ${notasFormatadas.length > 0 ? notasFormatadas : '<li>Nenhuma nota cadastrada.</li>'}
+                </ul>
             </div>
-        `;
-        notasListArea.appendChild(li);
-    });
+        </li>`;
+    }).join('');
 
+    // Sobrescreve TODO o container: form + matérias
+    notasListArea.innerHTML = addFormHTML + materiasHTML;
 
-    // 'change': salva quando o usuário sai do campo
-    notasListArea.querySelectorAll('.materia-inputs input').forEach(input => {
-        input.addEventListener('change', handleGradeChange);
-    });
+    // Re-anexa listener do form
+    const finalAddForm = document.getElementById('add-nota-form');
+    if (finalAddForm) finalAddForm.addEventListener('submit', handleAddNotaSubmit);
 }
 
-/**
- * Chamado quando o usuário MUDA um campo de nota e sai dele
- */
-async function handleGradeChange(e) {
-    const input = e.target;
-    const materiaId = input.dataset.materiaId;
-    const tipoNota = input.dataset.tipo; // "P1", "P2", "A1", "A2"
-    let valor = input.value;
+// ======================================
+// ⚙️ MANIPULADORES DE EVENTOS
+// ======================================
+async function handleAddNotaSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const materiaId = form.elements['materiaId'].value;
+    const tipoNota = form.elements['tipoNota'].value;
+    const valor = form.elements['valor'].value;
 
+    if (!materiaId || !tipoNota || !valor) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
 
-    if (parseFloat(valor) > 10) valor = '10';
-    if (parseFloat(valor) < 0) valor = '0';
-    input.value = valor; 
-
-
-    const notaDto = {
-        id_materia: materiaId,
-        tipo_nota: tipoNota,
-        nota_cadastro: parseFloat(valor)
-    };
+    const valorNum = parseFloat(valor);
+    if (valorNum < 0 || valorNum > 10) {
+        alert('A nota deve estar entre 0.0 e 10.0');
+        return;
+    }
 
     try {
-  
-        await saveNota(notaDto);
-        
-
-        updateMateriaStatus(materiaId);
-
+        await createNota({
+            id_materia: Number(materiaId),
+            nota_cadastro: valorNum,
+            tiponota: tipoNota
+        });
+        form.reset();
+        await renderNotas(CURRENT_USER_ID);
     } catch (error) {
-        alert(`Erro ao salvar nota: ${error.message}`);
-
+        alert(`Erro ao adicionar nota: ${error.message}`);
     }
 }
 
+notasListArea.addEventListener('click', async function(e) {
+    const deleteBtn = e.target.closest('.delete-nota-btn');
+    if (!deleteBtn) return;
 
+    const notaId = deleteBtn.dataset.notaId;
+    if (!notaId) return;
+
+    try {
+        // 1️⃣ Deleta do backend
+        await deleteNota(notaId);
+
+        // 2️⃣ Re-renderiza toda a lista
+        await renderNotas(CURRENT_USER_ID);
+
+        // ✅ Aqui o DOM já está atualizado com notas corretas e médias recalculadas
+    } catch (error) {
+        alert(`Erro ao deletar nota: ${error.message}`);
+    }
+});
+
+
+
+// ======================================
+// 📦 EXPORT / INICIALIZAÇÃO
+// ======================================
 export function initNotas(userId) {
+    CURRENT_USER_ID = userId;
 
-    MATERIAS_API_ENDPOINT = `/materias/usuario/${userId}`;
-    NOTAS_API_ENDPOINT = `/notas`; // Endpoint de "Upsert"
-    
+    const closeButton = document.querySelector('#modal-notas .close_button');
+    if (closeButton) closeButton.addEventListener('click', closeNotasModal);
 
-    renderNotas();
-    
-    console.log(`Módulo de Notas Inicializado para ${userId}.`);
+    renderNotas(userId);
+    openNotasModal();
 }
