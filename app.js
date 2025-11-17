@@ -20,7 +20,7 @@ if (!currentUserIdNum) {
     initAnotacoes(currentUserIdNum);   
     initNotas(currentUserIdNum);     
     
-    // 4. "CONECTA" A AGENDA AO WIDGET
+
     initAgenda(currentUserIdNum, renderAgendaWidget); 
     
     initAgendaWidget(currentUserIdNum);

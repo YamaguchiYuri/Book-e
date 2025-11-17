@@ -34,23 +34,50 @@ const adicionarMateriaNaLista = () => {
         return;
     }
 
-    // ✔️ Agora salva como OBJETO igual o backend quer
     const materiaObj = {
         nome_materia: nomeMateria,
         semestre_materia: semestreMateria
     };
 
+ 
     materiasArray.push(materiaObj);
 
-    // Atualiza lista visual
-    const novoItemLi = document.createElement('li');
-    novoItemLi.textContent = `${nomeMateria} (semestre ${semestreMateria})`;
-    listaMateriasUL.appendChild(novoItemLi);
+
+    renderMateriasList(); 
+
 
     inputNomeMateria.value = '';
     inputNomeMateria.focus();
 }
+function renderMateriasList() {
+    listaMateriasUL.innerHTML = ''; 
 
+    materiasArray.forEach((materia, index) => {
+        const novoItemLi = document.createElement('li');
+        
+        // X e texto
+        novoItemLi.innerHTML = `
+            ${materia.nome_materia} (sem. ${materia.semestre_materia})
+            <button class="delete-materia-btn" data-index="${index}">X</button>
+        `;
+        
+        listaMateriasUL.appendChild(novoItemLi);
+    });
+
+    // deletar
+    listaMateriasUL.querySelectorAll('.delete-materia-btn').forEach(button => {
+        button.addEventListener('click', handleDeleteMateria);
+    });
+}
+function handleDeleteMateria(event) {
+    const indexToRemove = Number(event.target.dataset.index);
+    
+    // Remove o item do array
+    materiasArray.splice(indexToRemove, 1);
+    
+    // Re-renderiza a lista inteira com os novos índices
+    renderMateriasList();
+}
 btnAbrirModal.addEventListener('click', abrirModal);
 btnFecharModal.addEventListener('click', fecharModal);
 closeModalX.addEventListener('click', fecharModal);

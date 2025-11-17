@@ -183,36 +183,32 @@ p{
     top:78%;
     overflow:hidden;
 }
-/* --- ESTILOS DO MODAL DE MATÉRIAS --- */
 
-/* Classe simples para esconder elementos */
 .hidden {
     display: none;
 }
 
-/* Estilo do Fundo (Overlay) */
+
 #modal-overlay {
-    position: fixed; /* Fica fixo na tela */
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Preto semi-transparente */
-    z-index: 10; /* Fica acima do formulário, mas abaixo do modal */
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 10; 
 }
 
-/* Ajustes no Modal de Matérias */
+
 #modal-materias {
     width: 350px; /* Um pouco menor */
     height: auto; /* Altura automática */
     z-index: 20; /* Fica na frente de tudo */
 }
 
-/* CONSERTO IMPORTANTE:
-   Remove o 'position: absolute' dos inputs
-   DENTRO do novo modal */
+
 .modal-content-materias input {
-    position: static; /* Volta ao fluxo normal */
+    position: static;
     width: 100%;
     margin-bottom: 15px;
 }
@@ -233,13 +229,45 @@ p{
     list-style-type: none;
     padding: 10px;
     margin-bottom: 10px;
-    overflow-y: auto; /* Adiciona scroll se a lista for grande */
+    overflow-y: auto; 
 }
 
 #lista-materias li {
     margin-bottom: 5px;
+    position: relative;
+    padding: 8px;
+    padding-right: 30px; /* Deixa espaço para o "X" */
+    background-color: #94add3;
+    box-shadow: 0 2px 0 #888;
+    color: white;
 }
-
+.delete-materia-btn {
+    position: absolute; 
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%); /* Alinha verticalmente */
+    
+    background-color: #bf9fff;
+    color: white;
+    border: none;
+    width: 20px;
+    height: 20px;
+    
+    box-shadow: 0 2px 0 #9f85d4; 
+    
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    
+    /* Centraliza o "X" */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 2px; 
+}
+.delete-materia-btn:active {
+    box-shadow: none;
+    top: calc(50% + 2px);
+}
 /* Botões do modal */
 .modal-buttons {
     display: flex;
