@@ -193,3 +193,97 @@ input[type="password"] {
     font-size: 10px;
     color: rgb(255, 243, 243);
 }
+
+/*** WIDGET NOTAS - BEA - **/
+/* ========================================= */
+/* CORREÇÃO VISUAL: INPUTS, SELECTS E BOTÕES */
+/* ========================================= */
+
+/* 1. CORREÇÃO DOS CAMPOS DE SELEÇÃO E INPUT DE NOTA */
+/* Remove estilo padrão do navegador e aplica estilo pixelado limpo */
+
+/* ========================================================== */
+/* CORREÇÃO DE FORÇA BRUTA PARA O MODAL DE NOTAS (VISUAL)    */
+/* ========================================================== */
+
+/* 1. INPUTS E SELECTS - OBRIGAR FUNDO BRANCO E LETRA PRETA */
+#modal-notas select,
+#modal-notas input[type="number"],
+#modal-notas input[type="text"] {
+    background-color: #ffffff !important; /* Fundo BRANCO */
+    color: #000000 !important; /* Letra PRETA */
+    
+    border: 3px solid #bf9fff !important; /* Borda Roxa do Tema */
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+    
+    /* Tamanho e Espaçamento */
+    width: 100% !important;
+    padding: 8px !important;
+    margin-top: 5px !important;
+    height: auto !important;
+    
+    /* Sombra interna para profundidade */
+    box-shadow: inset 3px 3px 0px #cccccc !important;
+    border-radius: 0 !important;
+    outline: none !important;
+}
+
+/* Ajuste específico para o input de NOTA (centralizar) */
+#modal-notas input[name="valor"] {
+    text-align: center !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+/* Efeito de Foco (Quando clica para escrever) */
+#modal-notas select:focus,
+#modal-notas input:focus {
+    background-color: #fff !important;
+    border-color: #e74c3c !important; /* Borda vermelha ao focar */
+}
+
+/* 2. BOTÃO [DEL] - OBRIGAR VISUAL VERMELHO DE BOTÃO */
+#modal-notas .delete-nota-btn {
+    display: inline-block !important;
+    background-color: #ff0000 !important; /* Vermelho Vivo */
+    color: #ffffff !important; /* Letra Branca */
+    
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 8px !important;
+    font-weight: normal !important;
+    
+    border: 2px solid #000000 !important; /* Borda preta para contraste */
+    padding: 5px 6px !important;
+    margin-left: 10px !important;
+    cursor: pointer !important;
+    
+    /* Sombra dura estilo pixel art */
+    box-shadow: 3px 3px 0px #000000 !important;
+    text-decoration: none !important;
+}
+
+/* Efeito Hover (Passar o mouse) */
+#modal-notas .delete-nota-btn:hover {
+    background-color: #ff6666 !important;
+    transform: translate(-1px, -1px);
+}
+
+/* Efeito Click (Clicar) */
+#modal-notas .delete-nota-btn:active {
+    background-color: #990000 !important;
+    box-shadow: none !important;
+    transform: translate(3px, 3px) !important;
+}
+
+/* 3. LISTA - AFASTAR OS ITENS */
+#modal-notas .materia-notas-lista li {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background-color: #e6f0ff !important; /* Fundo azulzinho claro */
+    color: #000000 !important; /* Letra preta na lista */
+    border: 2px solid #94add3 !important;
+    margin-bottom: 8px !important;
+    padding: 8px !important;
+}

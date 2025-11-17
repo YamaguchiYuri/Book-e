@@ -1,41 +1,7 @@
-// janela modal
-const dialogWindow = document.querySelector('.pixel_dialog');
-const dialogHeader = document.querySelector('.dialog_header');
-
-let offsetX, offsetY;
-
-const startDrag = (e) => {
-    e.preventDefault();
-    offsetX = e.clientX - dialogWindow.offsetLeft;
-    offsetY = e.clientY - dialogWindow.offsetTop;
-
-    document.addEventListener('mousemove', doDrag);
-    document.addEventListener('mouseup', stopDrag);
-}
-
-const doDrag = (e) => {
-    let newLeft = e.clientX - offsetX;
-    let newTop = e.clientY - offsetY;
-
-    dialogWindow.style.left = newLeft + 'px';
-    dialogWindow.style.top = newTop + 'px';
-}
-
-const stopDrag = () => {
-    document.removeEventListener('mousemove', doDrag);
-    document.removeEventListener('mouseup', stopDrag);
-}
-
-dialogHeader.addEventListener('mousedown', startDrag);
-// fim da janelinha
-
-
-
-// --- INÍCIO DO CÓDIGO DO MODAL DE MATÉRIAS ---
+// --- MODAL DE MATÉRIAS ---
 let materiasArray = [];
 
 const btnAbrirModal = document.getElementById('btnMateria');
-
 const modalOverlay = document.getElementById('modal-overlay');
 const modalMaterias = document.getElementById('modal-materias');
 const btnFecharModal = document.getElementById('btn-fechar-modal');
@@ -55,17 +21,30 @@ const fecharModal = () => {
 }
 
 const adicionarMateriaNaLista = () => {
-    const nomeMateria = inputNomeMateria.value;
+    const nomeMateria = inputNomeMateria.value.trim();
+    const semestreMateria = Number(document.querySelector("#ciclo").value);
 
-    if (nomeMateria.trim() === '') {
-        alert('Por favor, digite o nome da matéria.');
+    if (nomeMateria === '') {
+        alert('Digite o nome da matéria.');
         return;
     }
 
-    materiasArray.push(nomeMateria);
+    if (!semestreMateria) {
+        alert('Selecione o ciclo da matéria.');
+        return;
+    }
 
+    // ✔️ Agora salva como OBJETO igual o backend quer
+    const materiaObj = {
+        nome_materia: nomeMateria,
+        semestre_materia: semestreMateria
+    };
+
+    materiasArray.push(materiaObj);
+
+    // Atualiza lista visual
     const novoItemLi = document.createElement('li');
-    novoItemLi.textContent = nomeMateria;
+    novoItemLi.textContent = `${nomeMateria} (semestre ${semestreMateria})`;
     listaMateriasUL.appendChild(novoItemLi);
 
     inputNomeMateria.value = '';
@@ -79,50 +58,53 @@ modalOverlay.addEventListener('click', fecharModal);
 btnAddLista.addEventListener('click', adicionarMateriaNaLista);
 
 
-
 // --- FORMULÁRIO PRINCIPAL ---
 const formPrincipal = document.querySelector('form');
 const inpDataNascimento = document.querySelector("#data_nascimento");
 const inpFaculdade = document.querySelector("#faculdade");
 const inpCurso = document.querySelector("#curso");
 const inpCicloFaculdade = document.querySelector("#ciclo_faculdade");
-const inpCiclo = document.querySelector("#ciclo");
 
-// AQUI ARRUMA para usar o id correto salvo no login
+// ✔️ Pega ID salvo no login
 function getCurrentUserId() {
-    const userId = localStorage.getItem('currentUserId'); // CORRETO
+    const userId = localStorage.getItem('currentUserId');
     if (!userId) {
-        alert('Erro: Usuário não logado. Redirecionando...');
+        alert('Usuário não logado. Redirecionando...');
         window.location.href = '/login.html';
         return null;
     }
-    return userId;
+    return Number(userId);
 }
 
 
-
-// --- ENVIO DO FORMULÁRIO PARA O BACKEND ---
+// --- ENVIO PARA O BACKEND ---
 formPrincipal.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const userId = getCurrentUserId();
     if (!userId) return;
 
-    // monta DTO exatamente como o backend pede
+    if (!inpDataNascimento.value) {
+        alert("Informe sua data de nascimento.");
+        return;
+    }
+
+    if (materiasArray.length === 0) {
+        alert("Adicione pelo menos uma matéria.");
+        return;
+    }
+
+    // ✔️ Agora o DTO fica IGUAL ao exemplo do Postman
     const dto = {
-        id_user: Number(userId),
+        id_user: userId,
         dt_nasciment_em: inpDataNascimento.value,
         uni_nome: inpFaculdade.value,
         nome_curso: inpCurso.value,
         semestre: Number(inpCicloFaculdade.value),
-        materias: materiasArray.map(nome => ({
-            nome_materia: nome,
-            semestre_materia: Number(inpCiclo.value)
-        }))
+        materias: materiasArray
     };
 
-    console.log("Enviando DTO:");
-    console.log(dto);
+    console.log("DTO enviado ao backend:", dto);
 
     try {
         const response = await fetch("http://localhost:8081/api/formulario/enviar", {

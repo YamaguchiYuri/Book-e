@@ -106,4 +106,22 @@ public class UniversidadeUsuarioService {
                 entidade.getUsuario().getId_user()
         );
     }
+
+    public UniversidadeUsuarioFullResponseDto getFullById(Long id) {
+    UniversidadeUsuario entidade = universidadeUsuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("UniversidadeUsuario não encontrado"));
+
+    return new UniversidadeUsuarioFullResponseDto(
+            entidade.getId_universidade_usuario(),
+
+            entidade.getUniversidade().getId_uni(),
+            entidade.getUniversidade().getUni_nome(),
+
+            entidade.getCurso().getId_curso(),
+            entidade.getCurso().getNome_curso(),
+
+            entidade.getUsuario().getId_user(),
+            entidade.getUsuario().getNicknameuser()
+    );
+}
 }

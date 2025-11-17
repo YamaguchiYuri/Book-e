@@ -95,4 +95,33 @@ public class MateriaService {
                 materia.getNome_materia()
         );
     }
+
+public List<MateriaFullResponseDto> getFullByUserId(Long idUser) {
+    return materiaRepository.findAll()
+            .stream()
+            .filter(m -> m.getUniversidadeUsuario().getUsuario().getId_user().equals(idUser))
+            .map(m -> {
+                UniversidadeUsuario uu = m.getUniversidadeUsuario();
+
+                return new MateriaFullResponseDto(
+                        m.getId_materia(),
+                        m.getSemestre_materia(),
+                        m.getNome_materia(),
+
+                        uu.getId_universidade_usuario(),
+
+                        uu.getUniversidade().getId_uni(),
+                        uu.getUniversidade().getUni_nome(),
+
+                        uu.getCurso().getId_curso(),
+                        uu.getCurso().getNome_curso(),
+
+                        uu.getUsuario().getId_user(),
+                        uu.getUsuario().getNicknameuser()
+
+                );
+            })
+            .collect(Collectors.toList());
+}
+
 }
