@@ -11,19 +11,19 @@ import lombok.*;
 @AllArgsConstructor
 public class MateriaFullResponseDto {
 
-    private Long id_materia;
+    private Long idmateria;
     private int semestre_materia;
-    private String nome_materia;
+    private String nomemateria;
 
-    private Long id_universidade_usuario;
+    private Long iduniversidadeusuario;
 
-    private Long id_uni;
-    private String nome_universidade;
+    private Long iduni;
+    private String nomeuniversidade;
 
-    private Long id_curso;
-    private String nome_curso;
+    private Long idcurso;
+    private String nomecurso;
 
-    private Long id_user;
-    private String nickname_usuario;
+    private Long iduser;
+    private String nicknameusuario;
 
 }

@@ -14,15 +14,17 @@ public class NotaDesempenho {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_nota_desempenho;
+    private Long idnotadesempenho;
 
     @Column(nullable = false)
     private float nota_cadastro;
 
     @ManyToOne
+    @JoinColumn(name = "id_variavel", nullable = false)
+    private VariavelFormula variavel;
+
+    @ManyToOne
     @JoinColumn(name = "id_materia", nullable = false)
     private Materia materia;
 
-    @Column(length = 30, nullable = false)
-    private String tiponota;
 }

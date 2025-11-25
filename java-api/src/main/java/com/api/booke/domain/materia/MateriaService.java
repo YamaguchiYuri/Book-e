@@ -22,46 +22,46 @@ public class MateriaService {
         this.universidadeUsuarioRepository = universidadeUsuarioRepository;
     }
 
-    // ✅ Criar nova matéria
+    //Criar nova matéria
     @Transactional
     public MateriaResponseDto create(MateriaPostDto dto) {
-        UniversidadeUsuario universidadeUsuario = universidadeUsuarioRepository.findById(dto.getId_universidade_usuario())
+        UniversidadeUsuario universidadeUsuario = universidadeUsuarioRepository.findById(dto.getIduniversidadeusuario())
                 .orElseThrow(() -> new RuntimeException("UniversidadeUsuario não encontrado"));
 
         Materia materia = new Materia();
-        materia.setNome_materia(dto.getNome_materia());
-        materia.setSemestre_materia(dto.getSemestre_materia());
+        materia.setNomemateria(dto.getNomemateria());
+        materia.setSemestre_materia(dto.getSemestremateria());
         materia.setUniversidadeUsuario(universidadeUsuario);
 
         materiaRepository.save(materia);
         return toResponse(materia);
     }
 
-    // ✅ Atualizar matéria existente
+    //Atualizar matéria existente
     @Transactional
     public MateriaResponseDto update(MateriaPutDto dto) {
-        Materia materia = materiaRepository.findById(dto.getId_materia())
+        Materia materia = materiaRepository.findById(dto.getIdmateria())
                 .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
 
-        UniversidadeUsuario universidadeUsuario = universidadeUsuarioRepository.findById(dto.getId_universidade_usuario())
+        UniversidadeUsuario universidadeUsuario = universidadeUsuarioRepository.findById(dto.getIduniversidadeusuario())
                 .orElseThrow(() -> new RuntimeException("UniversidadeUsuario não encontrado"));
 
-        materia.setNome_materia(dto.getNome_materia());
-        materia.setSemestre_materia(dto.getSemestre_materia());
+        materia.setNomemateria(dto.getNomemateria());
+        materia.setSemestre_materia(dto.getSemestremateria());
         materia.setUniversidadeUsuario(universidadeUsuario);
 
         materiaRepository.save(materia);
         return toResponse(materia);
     }
 
-    // ✅ Buscar matéria por ID
+    //Buscar matéria por ID
     public MateriaResponseDto getById(Long id) {
         Materia materia = materiaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
         return toResponse(materia);
     }
 
-    // ✅ Listar todas as matérias
+    //Listar todas as matérias
     public List<MateriaResponseDto> getAll() {
         return materiaRepository.findAll()
                 .stream()
@@ -69,16 +69,16 @@ public class MateriaService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Listar matérias por universidade-usuario (útil pra exibir as matérias do usuário logado)
+    // Listar matérias por universidade-usuario (útil pra exibir as matérias do usuário logado)
     public List<MateriaResponseDto> getByUniversidadeUsuario(Long idUniversidadeUsuario) {
         return materiaRepository.findAll()
                 .stream()
-                .filter(m -> m.getUniversidadeUsuario().getId_universidade_usuario().equals(idUniversidadeUsuario))
+                .filter(m -> m.getUniversidadeUsuario().getIduniversidadeusuario().equals(idUniversidadeUsuario))
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    // ✅ Deletar matéria
+    //Deletar matéria
     @Transactional
     public void delete(Long id) {
         if (!materiaRepository.existsById(id)) {
@@ -87,36 +87,36 @@ public class MateriaService {
         materiaRepository.deleteById(id);
     }
 
-    // 🔁 Converter entidade → response
+    // Converter entidade → response
     private MateriaResponseDto toResponse(Materia materia) {
         return new MateriaResponseDto(
-                materia.getId_materia(),
+                materia.getIdmateria(),
                 materia.getSemestre_materia(),
-                materia.getNome_materia()
+                materia.getNomemateria()
         );
     }
 
 public List<MateriaFullResponseDto> getFullByUserId(Long idUser) {
     return materiaRepository.findAll()
             .stream()
-            .filter(m -> m.getUniversidadeUsuario().getUsuario().getId_user().equals(idUser))
+            .filter(m -> m.getUniversidadeUsuario().getUsuario().getIduser().equals(idUser))
             .map(m -> {
                 UniversidadeUsuario uu = m.getUniversidadeUsuario();
 
                 return new MateriaFullResponseDto(
-                        m.getId_materia(),
+                        m.getIdmateria(),
                         m.getSemestre_materia(),
-                        m.getNome_materia(),
+                        m.getNomemateria(),
 
-                        uu.getId_universidade_usuario(),
+                        uu.getIduniversidadeusuario(),
 
-                        uu.getUniversidade().getId_uni(),
-                        uu.getUniversidade().getUni_nome(),
+                        uu.getUniversidade().getIduni(),
+                        uu.getUniversidade().getUninome(),
 
-                        uu.getCurso().getId_curso(),
-                        uu.getCurso().getNome_curso(),
+                        uu.getCurso().getIdcurso(),
+                        uu.getCurso().getNomecurso(),
 
-                        uu.getUsuario().getId_user(),
+                        uu.getUsuario().getIduser(),
                         uu.getUsuario().getNicknameuser()
 
                 );

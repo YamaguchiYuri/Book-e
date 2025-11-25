@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MateriaPostDto {
-    private int semestre_materia;
-    private String nome_materia;
-    private Long id_universidade_usuario;
+    private int semestremateria;
+    private String nomemateria;
+    private Long iduniversidadeusuario;
 }

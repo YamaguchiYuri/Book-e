@@ -60,7 +60,7 @@ public class MateriaController {
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarMateria(@PathVariable Long id, @RequestBody MateriaPutDto dto) {
         try {
-            dto.setId_materia(id);
+            dto.setIdmateria(id);
             MateriaResponseDto materiaAtualizada = materiaService.update(dto);
             return ResponseEntity.ok(materiaAtualizada);
         } catch (RuntimeException e) {

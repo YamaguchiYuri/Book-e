@@ -21,8 +21,8 @@ public class CursoService {
     private CursoResponseDto toResponseCursoDto(Curso curso) {
         if (curso == null) return null;
         return new CursoResponseDto(
-            curso.getId_curso(),
-            curso.getNome_curso(),
+            curso.getIdcurso(),
+            curso.getNomecurso(),
             curso.getSemestre()
         );
     }
@@ -30,7 +30,7 @@ public class CursoService {
     /* Criar curso */
     public CursoResponseDto createCurso(CursoPostDto dto) {
         Curso curso = new Curso();
-        curso.setNome_curso(dto.getNome_curso());
+        curso.setNomecurso(dto.getNomecurso());
         curso.setSemestre(dto.getSemestre());
 
         return toResponseCursoDto(cursoRepository.save(curso));
@@ -41,7 +41,7 @@ public class CursoService {
         Curso curso = cursoRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Curso com ID " + id + " não encontrado."));
 
-        curso.setNome_curso(dto.getNome_curso());
+        curso.setNomecurso(dto.getNomecurso());
         curso.setSemestre(dto.getSemestre());
 
         return toResponseCursoDto(cursoRepository.save(curso));

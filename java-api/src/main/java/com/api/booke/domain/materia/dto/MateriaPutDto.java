@@ -12,8 +12,8 @@ import lombok.*;
  @AllArgsConstructor
 
  public class MateriaPutDto{
-    private Long id_materia;
-    private int semestre_materia;
-    private String nome_materia;
-    private Long id_universidade_usuario;
+    private Long idmateria;
+    private int semestremateria;
+    private String nomemateria;
+    private Long iduniversidadeusuario;
  }

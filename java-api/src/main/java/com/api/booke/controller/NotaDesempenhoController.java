@@ -20,19 +20,15 @@ public class NotaDesempenhoController {
     @Autowired
     private NotaDesempenhoService notaService;
 
-    // ======================================
-    // GET /api/notas
     // Lista todas as notas
-    // ======================================
     @GetMapping
     public ResponseEntity<List<NotaDesempenhoResponseDto>> listarNotas() {
         return ResponseEntity.ok(notaService.getAll());
     }
 
-    // ======================================
-    // GET /api/notas/buscar/{id}
+
     // Busca nota pelo ID
-    // ======================================
+
     @GetMapping("/buscar/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         try {
@@ -43,19 +39,14 @@ public class NotaDesempenhoController {
         }
     }
 
-    // ======================================
-    // GET /api/notas/materia/{idMateria}
     // Lista notas vinculadas à matéria
-    // ======================================
     @GetMapping("/materia/{idMateria}")
     public ResponseEntity<List<NotaDesempenhoResponseDto>> buscarPorMateria(@PathVariable Long idMateria) {
         return ResponseEntity.ok(notaService.getByMateria(idMateria));
     }
 
-    // ======================================
-    // POST /api/notas
     // Cria uma nova nota
-    // ======================================
+
     @PostMapping
     public ResponseEntity<?> criarNota(@RequestBody NotaDesempenhoPostDto dto) {
         try {
@@ -67,15 +58,23 @@ public class NotaDesempenhoController {
         }
     }
 
-    // ======================================
-    // PUT /api/notas/{id}
+    /*
+     * body:
+     * {
+  "idmateria": 5,
+  "notacadastro": 8.5,
+  "idvariavel": 2
+}
+     */
+
+
     // Atualiza nota existente
-    // ======================================
+
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarNota(@PathVariable Long id,
                                            @RequestBody NotaDesempenhoPutDto dto) {
         try {
-            dto.setId_nota_desempenho(id);
+            dto.setIdnotadesempenho(id);
             NotaDesempenhoResponseDto updated = notaService.update(dto);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
@@ -84,10 +83,9 @@ public class NotaDesempenhoController {
         }
     }
 
-    // ======================================
     // DELETE /api/notas/{id}
     // Exclui uma nota
-    // ======================================
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarNota(@PathVariable Long id) {
         try {

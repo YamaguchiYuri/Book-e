@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UniversidadePostDto {
-    private String uni_nome;
+    private String uninome;
 }

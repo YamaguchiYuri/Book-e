@@ -14,7 +14,7 @@ public class Materia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_materia;
+    private Long idmateria;
 
     @ManyToOne
     @JoinColumn(name = "id_universidade_usuario", nullable = false)
@@ -24,5 +24,5 @@ public class Materia {
     private int semestre_materia;
 
     @Column(length = 40, nullable = false)
-    private String nome_materia;
+    private String nomemateria;
 }

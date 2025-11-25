@@ -8,18 +8,18 @@ import java.util.List;
 @Data
 public class FormularioInicialRequestDto {
 
-    private Long id_user;
+    private Long iduser;
     private LocalDate dt_nasciment_em;
 
-    private String uni_nome;
-    private String nome_curso;
+    private String uninome;
+    private String nomecurso;
     private int semestre;
 
     private List<MateriaRequestDto> materias;
 
     @Data
     public static class MateriaRequestDto {
-        private String nome_materia;
+        private String nomemateria;
         private int semestre_materia;
     }
 }

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CursoPostDto {
-    private String nome_curso;
+    private String nomecurso;
     private Integer semestre;
 }

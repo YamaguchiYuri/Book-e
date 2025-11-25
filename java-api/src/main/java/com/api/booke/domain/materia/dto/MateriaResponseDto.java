@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MateriaResponseDto {
-    private Long id_materia;
-    private int semestre_materia;
-    private String nome_materia;
+    private Long idmateria;
+    private int semestremateria;
+    private String nomemateria;
 }
