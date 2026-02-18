@@ -8,8 +8,8 @@ import java.util.List;
 @AllArgsConstructor
 public class FormularioInicialResponseDto {
 
-    private Long id_uni;
-    private Long id_curso;
-    private Long id_universidade_usuario;
-    private List<Long> id_materia;
+    private Long iduni;
+    private Long idcurso;
+    private Long iduniversidadeusuario;
+    private List<Long> idmateria;
 }

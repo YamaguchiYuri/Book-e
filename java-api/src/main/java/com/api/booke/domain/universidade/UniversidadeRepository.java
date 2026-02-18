@@ -9,7 +9,7 @@ import com.api.booke.entitites.Universidade;
 
 public interface UniversidadeRepository extends JpaRepository<Universidade, Long> {
     
-    @Query("SELECT u FROM Universidade u WHERE u.uni_nome = :uni_nome")
-    Optional<Universidade> findByNome(@Param("uni_nome") String uni_nome);
+    @Query("SELECT u FROM Universidade u WHERE u.uninome = :uninome")
+    Optional<Universidade> findByNome(@Param("uninome") String uninome);
 }
 

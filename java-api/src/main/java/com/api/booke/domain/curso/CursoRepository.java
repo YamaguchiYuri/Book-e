@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import com.api.booke.entitites.Curso;
 
 public interface CursoRepository extends JpaRepository<Curso, Long> {
-@Query("SELECT c FROM Curso c WHERE c.nome_curso = :nomeCurso AND c.semestre = :semestre")
+@Query("SELECT c FROM Curso c WHERE c.nomecurso = :nomeCurso AND c.semestre = :semestre")
 Optional<Curso> findByNomeCursoAndSemestre(@Param("nomeCurso") String nomeCurso,
                                            @Param("semestre") Integer semestre);
 

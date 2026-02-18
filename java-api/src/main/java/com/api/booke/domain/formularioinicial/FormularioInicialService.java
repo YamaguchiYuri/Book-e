@@ -30,7 +30,7 @@ public class FormularioInicialService {
     public FormularioInicialResponseDto processarFormulario(FormularioInicialRequestDto dto) {
 
         // === 1. Buscar usuário ===
-        Usuario usuario = usuarioRepository.findById(dto.getId_user())
+        Usuario usuario = usuarioRepository.findById(dto.getIduser())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         // Atualiza data nascimento
@@ -40,21 +40,21 @@ public class FormularioInicialService {
 
         // === 2. Buscar ou criar universidade ===
         Universidade universidade = universidadeRepository
-                .findByNome(dto.getUni_nome())
+                .findByNome(dto.getUninome())
                 .orElseGet(() -> {
 
                     Universidade novaUni = new Universidade();
-                    novaUni.setUni_nome(dto.getUni_nome());
+                    novaUni.setUninome(dto.getUninome());
                     return universidadeRepository.save(novaUni);
                 });
 
         // === 3. Buscar ou criar curso ===
         Curso curso = cursoRepository
-                .findByNomeCursoAndSemestre(dto.getNome_curso(), dto.getSemestre())
+                .findByNomeCursoAndSemestre(dto.getNomecurso(), dto.getSemestre())
                 .orElseGet(() -> {
 
                     Curso novoCurso = new Curso();
-                    novoCurso.setNome_curso(dto.getNome_curso());
+                    novoCurso.setNomecurso(dto.getNomecurso());
                     novoCurso.setSemestre(dto.getSemestre());
                     return cursoRepository.save(novoCurso);
                 });
@@ -73,20 +73,20 @@ public class FormularioInicialService {
             dto.getMaterias().forEach(m -> {
 
                 Materia materia = new Materia();
-                materia.setNome_materia(m.getNome_materia());
+                materia.setNomemateria(m.getNomemateria());
                 materia.setSemestre_materia(m.getSemestre_materia());
                 materia.setUniversidadeUsuario(uu);
 
                 materiaRepository.save(materia);
-                materiasIds.add(materia.getId_materia());
+                materiasIds.add(materia.getIdmateria());
             });
         }
 
         // === 6. Retorno ===
         return new FormularioInicialResponseDto(
-                universidade.getId_uni(),
-                curso.getId_curso(),
-                uu.getId_universidade_usuario(),
+                universidade.getIduni(),
+                curso.getIdcurso(),
+                uu.getIduniversidadeusuario(),
                 materiasIds
         );
     }

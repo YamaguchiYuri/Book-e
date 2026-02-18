@@ -78,7 +78,7 @@ public class CursoController {
         List<CursoResponseDto> cursos = cursoService.listarCursos();
 
         return cursos.stream()
-                .filter(c -> c.getId_curso().equals(id))
+                .filter(c -> c.getIdcurso().equals(id))
                 .findFirst()
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)

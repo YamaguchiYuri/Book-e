@@ -60,6 +60,13 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
+    /*body:
+     * {
+        "nicknameuser": "Usuario",
+        "email": "usuario@gmail.com",
+        "passwordkey_user": "senha123"
+    }
+     */
     /* /{id} → atualiza usuário existente */
     @PutMapping("/{id}")
     public ResponseEntity<?> alterarUsuario(@PathVariable Long id, @RequestBody UsuarioPutDTO dto) {
@@ -70,6 +77,16 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    /*
+     * {
+        "iduser": 1,
+        "nicknameuser": "UsuAtualizado",
+        "email": "novoemail@gmail.com",
+         "dt_nasciment_em": "2004-10-17",
+         "passwordkey_user": "novasenha"
+    }
+     */
 
     /* DELETE /{id} exclui usuário*/
     @DeleteMapping("/{id}")
@@ -87,7 +104,7 @@ public class UsuarioController {
     List<UsuarioResponseDto> usuarios = usuarioService.listarUsuarios();
 
     return usuarios.stream()
-            .filter(u -> u.getId_user().equals(id))
+            .filter(u -> u.getIduser().equals(id))
             .findFirst()
             .<ResponseEntity<?>>map(ResponseEntity::ok)
             .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)

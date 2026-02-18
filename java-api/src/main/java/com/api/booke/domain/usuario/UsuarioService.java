@@ -25,7 +25,7 @@ public class UsuarioService {
     private UsuarioResponseDto toResponseUsuarioDTO (Usuario usuario){
         if(usuario == null) return null;
         return new UsuarioResponseDto(
-            usuario.getId_user(),
+            usuario.getIduser(),
             usuario.getNicknameuser(),
             usuario.getEmail(),
             usuario.getDt_nasciment_em(),

@@ -8,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotaDesempenhoPutDto {
-    private Long id_nota_desempenho;
-    private Long id_materia;
-    private float nota_cadastro;
-    private String tiponota;
+    private Long idnotadesempenho;
+    private Long idmateria;
+    private float notacadastro;
+    private Long idvariavel;
 }

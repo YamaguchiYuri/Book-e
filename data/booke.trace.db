@@ -149,3 +149,6 @@ org.h2.jdbc.JdbcSQLNonTransientException: Unknown data type: "UNIQUEIDENTIFIER";
 2025-11-12 13:15:17.875263-03:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CREDENTIALS" not found (this database is empty); SQL statement:
 insert into credentials (dt_criado_em,dt_nasciment_em,email,nickname_user,passwordkey_user,id_user) values (?,?,?,?,?,default) [42104-232]
+2025-11-25 00:11:37.380564-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * [*]VARIAVEL_FORMULA"; SQL statement:
+SELECT * VARIAVEL_FORMULA [42000-232]
