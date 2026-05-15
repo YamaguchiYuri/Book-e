@@ -60,7 +60,7 @@ function deleteNota(notaId) {
 // ======================================
 function calculateMedia(notas) {
     if (!notas || notas.length === 0) return 0;
-    const totalNotas = notas.reduce((sum, nota) => sum + (parseFloat(nota.nota_cadastro) || 0), 0);
+    const totalNotas = notas.reduce((sum, nota) => sum + (parseFloat(nota.notacadastro) || 0), 0);
     return totalNotas / notas.length;
 }
 
@@ -127,7 +127,7 @@ async function renderNotas(userId) {
         if (!materias || materias.length === 0) {
             materias = [];
         }
-        const notasDeTodas = await Promise.all(materias.map(m => loadNotasDaMateria(m.id_materia)));
+        const notasDeTodas = await Promise.all(materias.map(m => loadNotasDaMateria(m.idmateria)));
         materias.forEach((m, i) => m.notas = notasDeTodas[i]);
     } catch (error) {
         notasListArea.innerHTML = addFormHTML + `<li style="color:red; font-size:10px; text-align:center;">Erro ao carregar dados: ${error.message}</li>`;
@@ -155,7 +155,7 @@ async function renderNotas(userId) {
             </li>`
         ).join('');
 
-        return `<li class="materia-card" data-materia-id="${materia.id_materia}">
+        return `<li class="materia-card" data-materia-id="${materia.idmateria}">
             <div class="materia-header">
                 <h3>${materia.nome_materia}</h3>
                 <span class="${statusClass}">${statusText}</span>
@@ -199,8 +199,8 @@ async function handleAddNotaSubmit(e) {
 
     try {
         await createNota({
-            id_materia: Number(materiaId),
-            nota_cadastro: valorNum,
+            idmateria: Number(materiaId),
+            notacadastro: valorNum,
             tiponota: tipoNota
         });
         form.reset();
