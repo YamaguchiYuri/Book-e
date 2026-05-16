@@ -2,7 +2,7 @@ import { initAllWindows, initIcons } from './janelas.js';
 import { initAnotacoes } from './anotacoes.js';
 import { initNotas } from './notas.js';
 import { initAgenda } from './agenda.js'; 
-
+import { initMaterias } from './materias.js';
 
 import { initAgendaWidget, renderAgendaWidget } from './widgetagenda.js'; 
 
@@ -19,7 +19,7 @@ if (!currentUserIdNum) {
 
     initAnotacoes(currentUserIdNum);   
     initNotas(currentUserIdNum);     
-    
+    initMaterias(currentUserIdNum);
 
     initAgenda(currentUserIdNum, renderAgendaWidget); 
     
