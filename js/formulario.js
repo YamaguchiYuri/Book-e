@@ -55,6 +55,7 @@ formPrincipal.addEventListener('submit', async (event) => {
 
         const resposta = await response.json();
         console.log("Resposta do backend:", resposta);
+        localStorage.setItem('currentIdUniversidadeUsuario', resposta.id_universidade_usuario);
 
         alert("Formulário enviado com sucesso!");
         window.location.href = "/app.html";
