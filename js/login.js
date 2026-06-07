@@ -80,26 +80,27 @@ form.addEventListener('submit', async (event) => {
         });
 
         if (response.ok) { 
+                    const usuario = await response.json(); 
+                    alert('Login bem-sucedido! Redirecionando...');
 
-            const usuario = await response.json(); 
-            alert('Login bem-sucedido! Redirecionando...');
+                    // 1. Mantém o que já tinha
+                    localStorage.setItem('currentUser', usuario.nickname_user); 
+                    localStorage.setItem('currentUserId', usuario.id_user); 
 
-          
-            // Salva o NOME (para o 'app.js' usar)
-            localStorage.setItem('currentUser', usuario.nickname_user); 
-            // Salva o ID (para o 'formulario.js' usar)
-            localStorage.setItem('currentUserId', usuario.id_user); 
+                    // 2. ADICIONA ESTA PARTE: Salva o ID da Universidade, se ele existir
+                    if (usuario.id_universidade_usuario) {
+                        localStorage.setItem('currentIdUniversidadeUsuario', usuario.id_universidade_usuario);
+                    }
 
+                    // 3. Mantém a lógica de redirecionamento intacta
+                    if (usuario.dt_nasciment_em) {
+                        window.location.href = '/app.html';
+                    } else {
+                        window.location.href = '/formulario.html';
+                    }
+                    }
 
-            if (usuario.dt_nasciment_em) {
-
-                window.location.href = '/app.html';
-            } else {
-     
-                window.location.href = '/formulario.html';
-            }
-
-        } else {
+         else {
   
             const errorText = await response.text();
             aviso.innerHTML = errorText || 'Usuário ou senha incorretos.';

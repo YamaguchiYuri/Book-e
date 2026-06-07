@@ -494,3 +494,57 @@ body {
     font-family: 'Press Start 2P', cursive;
     box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
 }
+
+/* Layout da Janela de Matérias */
+.content-materias {
+    height: 400px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#lista-materias-app {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #94add3;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+    list-style: none;
+    margin-top: 0;
+}
+
+#lista-materias-app li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #b3d2ff;
+    padding: 8px;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 0 #9f85d4;
+    font-size: 10px;
+    color: #333;
+}
+
+#inserir-materia {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#inserir-materia input {
+    position: static;
+    width: 100%;
+    color: azure;
+    background-color: #94add3;
+    border: none;
+    outline: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+#inserir-materia .btn {
+    position: static;
+}

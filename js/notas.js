@@ -40,7 +40,6 @@ async function apiSend(url, data, method) {
     return response.json();
 }
 
-
 // Funções específicas da API
 function loadMaterias(userId) {
     return apiGet(`${MATERIAS_API_URL}/buscar/${userId}`);
@@ -60,6 +59,7 @@ function deleteNota(notaId) {
 // ======================================
 function calculateMedia(notas) {
     if (!notas || notas.length === 0) return 0;
+    // CORREÇÃO: nota_cadastro
     const totalNotas = notas.reduce((sum, nota) => sum + (parseFloat(nota.nota_cadastro) || 0), 0);
     return totalNotas / notas.length;
 }
@@ -87,6 +87,7 @@ async function getAddNotaFormHTML(userId) {
         </li>`;
     }
 
+    // CORREÇÃO: m.id_materia
     const materiaOptions = materias.map(m => `<option value="${m.id_materia}">${m.nome_materia}</option>`).join('');
 
     return `<li class="add-nota-form-container">
@@ -127,6 +128,7 @@ async function renderNotas(userId) {
         if (!materias || materias.length === 0) {
             materias = [];
         }
+        // CORREÇÃO: m.id_materia
         const notasDeTodas = await Promise.all(materias.map(m => loadNotasDaMateria(m.id_materia)));
         materias.forEach((m, i) => m.notas = notasDeTodas[i]);
     } catch (error) {
@@ -149,12 +151,14 @@ async function renderNotas(userId) {
         }
 
         const notasFormatadas = (materia.notas || []).map(n =>
+            // CORREÇÃO: n.id_nota_desempenho
             `<li data-nota-id="${n.id_nota_desempenho}">
                 ${n.tiponota}: <strong>${n.nota_cadastro.toFixed(1)}</strong>
                 <span class="delete-nota-btn" data-nota-id="${n.id_nota_desempenho}">[DEL]</span>
             </li>`
         ).join('');
 
+        // CORREÇÃO: materia.id_materia
         return `<li class="materia-card" data-materia-id="${materia.id_materia}">
             <div class="materia-header">
                 <h3>${materia.nome_materia}</h3>
@@ -168,10 +172,8 @@ async function renderNotas(userId) {
         </li>`;
     }).join('');
 
-    // Sobrescreve TODO o container: form + matérias
     notasListArea.innerHTML = addFormHTML + materiasHTML;
 
-    // Re-anexa listener do form
     const finalAddForm = document.getElementById('add-nota-form');
     if (finalAddForm) finalAddForm.addEventListener('submit', handleAddNotaSubmit);
 }
@@ -198,6 +200,7 @@ async function handleAddNotaSubmit(e) {
     }
 
     try {
+        // CORREÇÃO: Objeto montado idêntico ao NotaDesempenhoPostDto
         await createNota({
             id_materia: Number(materiaId),
             nota_cadastro: valorNum,
@@ -218,19 +221,12 @@ notasListArea.addEventListener('click', async function(e) {
     if (!notaId) return;
 
     try {
-        // 1️⃣ Deleta do backend
         await deleteNota(notaId);
-
-        // 2️⃣ Re-renderiza toda a lista
         await renderNotas(CURRENT_USER_ID);
-
-        // ✅ Aqui o DOM já está atualizado com notas corretas e médias recalculadas
     } catch (error) {
         alert(`Erro ao deletar nota: ${error.message}`);
     }
 });
-
-
 
 // ======================================
 // 📦 EXPORT / INICIALIZAÇÃO
