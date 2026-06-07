@@ -23,6 +23,9 @@ public class Usuario {
     @Column(name = "id_user")
     private Long iduser;
 
+    @Column(name = "semestre_atual")
+    private int semestreatual;
+
     @Column(length = 20, unique = true)
     private String nicknameuser;
 
@@ -38,10 +41,11 @@ public class Usuario {
     @Column(name = "dt_criado_em", updatable = false)
     private LocalDateTime data_criado_em = LocalDateTime.now();
 
-    public Usuario(String nicknameuser, String passwordkey_user, String email, LocalDate data_nasciment_em) {
+    public Usuario(String nicknameuser, String passwordkey_user, String email, int semestreatual, LocalDate data_nasciment_em) {
         this.nicknameuser = nicknameuser;
         this.passwordkey_user = passwordkey_user;
         this.email = email;
+        this.semestreatual = semestreatual;
         this.dt_nasciment_em = data_nasciment_em;
     }
 }

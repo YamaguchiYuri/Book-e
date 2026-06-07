@@ -27,7 +27,7 @@ public class Curso{
     private String nomecurso;
 
     @Column(name = "semestre", nullable = false)
-    private Integer semestre;
+    private Integer semestre; /*numero de semestres */
 
     // RELACIONAMENTO COM UNIVERSIDADECURSO
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -24,7 +24,6 @@ public class FormularioInicialService {
     private final UniversidadeRepository universidadeRepository;
     private final CursoRepository cursoRepository;
     private final UniversidadeUsuarioRepository universidadeUsuarioRepository;
-    private final MateriaRepository materiaRepository;
 
     @Transactional
     public FormularioInicialResponseDto processarFormulario(FormularioInicialRequestDto dto) {
@@ -36,6 +35,10 @@ public class FormularioInicialService {
         // Atualiza data nascimento
         if (dto.getDt_nasciment_em() != null) {
             usuario.setDt_nasciment_em(dto.getDt_nasciment_em());
+        }
+        // Atualizar semestre atual
+        if (dto.getSemestreatual() != 0) {
+            usuario.setSemestreatual(dto.getSemestreatual());
         }
 
         // === 2. Buscar ou criar universidade ===
@@ -69,25 +72,11 @@ public class FormularioInicialService {
         // === 5. Criar matérias ===
         List<Long> materiasIds = new ArrayList<>();
 
-        if (dto.getMaterias() != null) {
-            dto.getMaterias().forEach(m -> {
-
-                Materia materia = new Materia();
-                materia.setNomemateria(m.getNomemateria());
-                materia.setSemestre_materia(m.getSemestre_materia());
-                materia.setUniversidadeUsuario(uu);
-
-                materiaRepository.save(materia);
-                materiasIds.add(materia.getIdmateria());
-            });
-        }
-
         // === 6. Retorno ===
         return new FormularioInicialResponseDto(
                 universidade.getIduni(),
                 curso.getIdcurso(),
-                uu.getIduniversidadeusuario(),
-                materiasIds
+                uu.getIduniversidadeusuario()
         );
     }
 }

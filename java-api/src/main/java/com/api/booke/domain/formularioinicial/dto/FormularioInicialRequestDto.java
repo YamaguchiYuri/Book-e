@@ -3,7 +3,7 @@ package com.api.booke.domain.formularioinicial.dto;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 @Data
 public class FormularioInicialRequestDto {
@@ -13,13 +13,7 @@ public class FormularioInicialRequestDto {
 
     private String uninome;
     private String nomecurso;
-    private int semestre;
+    private int semestre; /*numero de semestres */
+    private int semestreatual;
 
-    private List<MateriaRequestDto> materias;
-
-    @Data
-    public static class MateriaRequestDto {
-        private String nomemateria;
-        private int semestre_materia;
-    }
 }

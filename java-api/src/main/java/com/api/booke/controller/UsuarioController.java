@@ -84,7 +84,8 @@ public class UsuarioController {
         "nicknameuser": "UsuAtualizado",
         "email": "novoemail@gmail.com",
          "dt_nasciment_em": "2004-10-17",
-         "passwordkey_user": "novasenha"
+         "passwordkey_user": "novasenha",
+         "semestreatual": 4
     }
      */
 

@@ -21,4 +21,5 @@ public class UsuarioPutDTO {
     private String email;
     private LocalDate dt_nasciment_em;
     private String  passwordkey_user;
+    private int semestreatual;
 }

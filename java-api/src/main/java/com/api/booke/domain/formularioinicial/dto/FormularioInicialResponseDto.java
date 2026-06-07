@@ -11,5 +11,4 @@ public class FormularioInicialResponseDto {
     private Long iduni;
     private Long idcurso;
     private Long iduniversidadeusuario;
-    private List<Long> idmateria;
 }

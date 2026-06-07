@@ -21,4 +21,5 @@ public class UsuarioResponseDto {
     private String email;
     private LocalDate dt_nasciment_em;
     private LocalDateTime dt_criado_em;
+    private int semestreatual;
 }

@@ -32,20 +32,10 @@ public class FormularioInicialController {
  *  {
   "iduser": 1,
   "dt_nasciment_em": "2004-10-17",
+  "semestreatual": 3,
 
   "uninome": "Universidade de São Paulo",
   "nomecurso": "Ciência da Computação",
-  "semestre": 3,
-
-  "materias": [
-    {
-      "nomemateria": "Cálculo I",
-      "semestre_materia": 1
-    },
-    {
-      "nomemateria": "Estruturas de Dados",
-      "semestre_materia": 3
-    }
-  ]
+  "semestre": 3
 }
  */

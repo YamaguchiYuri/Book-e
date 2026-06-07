@@ -18,4 +18,5 @@ public class UsuarioPostDto {
     private String nicknameuser;
     private String email;
     private String passwordkey_user;
+    private int semestreatual;
 }
