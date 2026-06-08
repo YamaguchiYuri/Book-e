@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 public class UsuarioPutDTO {
     private Long iduser;
     private String nicknameuser;
-    private String email;
     private LocalDate dt_nasciment_em;
-    private String  passwordkey_user;
     private String semestreatual;
 }

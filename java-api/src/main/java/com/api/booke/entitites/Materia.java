@@ -29,12 +29,16 @@ public class Materia {
     @Column(name = "aprovacao") // Nome explícito ajuda muito
     private Double aprovacao;
 
-    @OneToMany(mappedBy = "materia", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "materia")
     private List<Formula> formula;
 
-    @OneToMany(mappedBy = "materia", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NotaDesempenho> nota;
+    @OneToMany(mappedBy = "materia")
+    private List<NotaDesempenho> notasDesempenho;;
+
     /*para apagar as anotações junto com materia */
-    @OneToMany(mappedBy = "materia", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "materia")
     private List<Anotacao> anotacoes;
+
+
 }

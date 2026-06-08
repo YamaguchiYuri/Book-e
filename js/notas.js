@@ -53,6 +53,9 @@ function loadVariaveisDaFormula(formulaId) { return apiGet(`${VARIAVEIS_API_URL}
 function getCalculo(formulaId, materiaId) { return apiGet(`${CALCULAR_API_URL}/${formulaId}/${materiaId}`); }
 function loadFaltasDaMateria(materiaId) { return apiGet(`${FALTAS_API_URL}/listarPorMateria/${materiaId}`); }
 function createNota(notaDto) { return apiSend(NOTAS_API_URL, notaDto, 'POST'); }
+function updateNota(id, notaDto) {
+    return apiSend(`${NOTAS_API_URL}/${id}`, notaDto, 'PUT');
+}
 function deleteNota(notaId) { return apiSend(`${NOTAS_API_URL}/${notaId}`, null, 'DELETE'); }
 function updateFaltas(idFalta, faltasDto) { return apiSend(`${FALTAS_API_URL}/${idFalta}`, faltasDto, 'PUT'); }
 function createFaltas(faltasDto) { return apiSend(`${FALTAS_API_URL}/criar`, faltasDto, 'POST'); }
@@ -131,6 +134,45 @@ async function renderNotas(userId) {
         return;
     }
 
+    const faltasHTML = materias.map(materia => {
+
+    const faltaObj = materia.faltas;
+    const numFaltas = faltaObj ? faltaObj.numfaltas : 0;
+    const limiteFaltas = faltaObj ? (faltaObj.limitefaltas || 20) : 20;
+
+    return `
+        <div class="faltas-isolated-box">
+
+            <h3>${materia.nomemateria}</h3>
+
+            <div class="faltas-row">
+
+                <span>
+                    FALTAS: ${numFaltas}/${limiteFaltas}
+                </span>
+
+                <div class="faltas-buttons">
+
+                    <button
+                        class="btn-falta"
+                        onclick="window.alterarFalta(${faltaObj?.idfaltamateria || 0}, -1, ${materia.idmateria})">
+                        -
+                    </button>
+
+                    <button
+                        class="btn-falta"
+                        onclick="window.alterarFalta(${faltaObj?.idfaltamateria || 0}, 1, ${materia.idmateria})">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}).join('');
+
     let materiasHTML = await Promise.all(materias.map(async (materia) => {
         const notaAprovacao = materia.aprovacao || 6.0;
         const media = materia.mediaCalculada;
@@ -162,17 +204,7 @@ async function renderNotas(userId) {
             <div class="materia-header">
                 <h3>${materia.nomemateria}</h3>
             </div>
-            
-            <div class="faltas-isolated-box">
-                <div class="faltas-title">CONTROLE DE FALTAS</div>
-                <div class="faltas-row">
-                    <span>FALTAS: ${numFaltas}/${limiteFaltas}</span>
-                    <div class="faltas-buttons">
-                        <button class="btn-falta" onclick="window.alterarFalta(${faltaObj?.idfaltamateria || 0}, -1, ${materia.idmateria})">-</button>
-                        <button class="btn-falta" onclick="window.alterarFalta(${faltaObj?.idfaltamateria || 0}, 1, ${materia.idmateria})">+</button>
-                    </div>
-                </div>
-            </div>
+        
 
             <div class="media-container">
                 <span class="${statusClass}">${statusText}</span>
@@ -184,7 +216,17 @@ async function renderNotas(userId) {
         </li>`;
     }));
 
-    notasListArea.innerHTML = addFormHTML + materiasHTML.join('');
+   notasListArea.innerHTML =
+    addFormHTML +
+
+    `
+    <div class="faltas-section">
+        <h2>CONTROLE DE FALTAS</h2>
+        ${faltasHTML}
+    </div>
+    ` +
+
+    materiasHTML.join('');
 
     const form = document.getElementById('add-nota-form');
     if (form) {
@@ -229,18 +271,52 @@ window.alterarFalta = async function(idFalta, delta, materiaId = null) {
 
 async function handleAddNotaSubmit(e) {
     e.preventDefault();
-    const form = e.target;
-    try {
-        await createNota({
-            idmateria: Number(form.elements['materiaId'].value), 
-            notacadastro: parseFloat(form.elements['valor'].value),
-            idvariavel: Number(form.elements['tipoNota'].value)
-        });
-        form.reset();
-        await renderNotas(CURRENT_USER_ID);
-    } catch (error) { alert(`Erro: ${error.message}`); }
-}
 
+    const form = e.target;
+
+    const materiaId = Number(form.elements['materiaId'].value);
+    const variavelId = Number(form.elements['tipoNota'].value);
+    const valorNota = parseFloat(form.elements['valor'].value);
+
+    try {
+
+        const notasExistentes =
+            await loadNotasDaMateria(materiaId);
+
+        const notaExistente =
+            notasExistentes.find(
+                n => Number(n.idvariavel) === variavelId
+            );
+
+        if (notaExistente) {
+
+            await updateNota(
+                notaExistente.idnotadesempenho,
+                {
+                    idmateria: materiaId,
+                    idvariavel: variavelId,
+                    notacadastro: valorNota
+                }
+            );
+
+        } else {
+
+            await createNota({
+                idmateria: materiaId,
+                idvariavel: variavelId,
+                notacadastro: valorNota
+            });
+
+        }
+
+        form.reset();
+
+        await renderNotas(CURRENT_USER_ID);
+
+    } catch (error) {
+        alert(`Erro: ${error.message}`);
+    }
+}
 notasListArea.addEventListener('click', async function(e) {
     if (e.target.classList.contains('delete-nota-btn')) {
         await deleteNota(e.target.dataset.notaId);
@@ -250,8 +326,13 @@ notasListArea.addEventListener('click', async function(e) {
 
 export function initNotas(userId) {
     CURRENT_USER_ID = userId;
+
     const closeButton = document.querySelector('#modal-notas .close_button');
     if (closeButton) closeButton.addEventListener('click', closeNotasModal);
-    renderNotas(userId);
-    openNotasModal();
+
+    renderNotas(userId); // mantém render, mas não abre modal
 }
+
+window.addEventListener('semestreMudou', () => {
+    renderNotas(CURRENT_USER_ID);
+});

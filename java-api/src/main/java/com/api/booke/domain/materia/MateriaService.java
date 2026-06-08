@@ -1,6 +1,10 @@
 package com.api.booke.domain.materia;
 
+import com.api.booke.domain.anotacoes.AnotacaoRepository;
+import com.api.booke.domain.faltas.FaltasRepository;
+import com.api.booke.domain.formula.FormulaRepository;
 import com.api.booke.domain.materia.dto.*;
+import com.api.booke.domain.notadesempenho.NotaDesempenhoRepository;
 import com.api.booke.domain.universidadeusuario.UniversidadeUsuarioRepository;
 import com.api.booke.entitites.Materia;
 import com.api.booke.entitites.UniversidadeUsuario;
@@ -16,10 +20,18 @@ public class MateriaService {
 
     private final MateriaRepository materiaRepository;
     private final UniversidadeUsuarioRepository universidadeUsuarioRepository;
+    private final NotaDesempenhoRepository notaDesempenhoRepository;
+    private final FaltasRepository faltasRepository;
+    private final AnotacaoRepository anotacaoRepository;
+    private final FormulaRepository formulaRepository;
 
-    public MateriaService(MateriaRepository materiaRepository, UniversidadeUsuarioRepository universidadeUsuarioRepository) {
+    public MateriaService(MateriaRepository materiaRepository, UniversidadeUsuarioRepository universidadeUsuarioRepository, NotaDesempenhoRepository notaDesempenhoRepository, FaltasRepository faltasRepository, AnotacaoRepository anotacaoRepository, FormulaRepository formulaRepository) {
         this.materiaRepository = materiaRepository;
         this.universidadeUsuarioRepository = universidadeUsuarioRepository;
+        this.notaDesempenhoRepository = notaDesempenhoRepository;
+        this.faltasRepository = faltasRepository;
+        this.anotacaoRepository = anotacaoRepository;
+        this.formulaRepository = formulaRepository;
     }
 
     //Criar nova matéria
@@ -81,13 +93,19 @@ public class MateriaService {
     }
 
     //Deletar matéria
-    @Transactional
-    public void delete(Long id) {
-        if (!materiaRepository.existsById(id)) {
-            throw new RuntimeException("Matéria não encontrada");
-        }
-        materiaRepository.deleteById(id);
-    }
+@Transactional
+public void delete(Long id) {
+
+    Materia materia = materiaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
+
+    faltasRepository.deleteByMateria(materia);
+    notaDesempenhoRepository.deleteByMateria(materia);
+    anotacaoRepository.deleteByMateria(materia);
+    formulaRepository.deleteByMateria(materia);
+
+    materiaRepository.delete(materia);
+}
 
     // Converter entidade → response
     private MateriaResponseDto toResponse(Materia materia) {

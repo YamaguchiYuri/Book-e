@@ -12,5 +12,7 @@ public interface NotaDesempenhoRepository extends JpaRepository<NotaDesempenho, 
     List<NotaDesempenho> findByMateria(Materia materia);
 
     Optional<NotaDesempenho> findByVariavelIdvariavelAndMateriaIdmateria(Long idVariavel, Long idMateria);
-
+    
+    void deleteByMateria(Materia materia);
 }
+

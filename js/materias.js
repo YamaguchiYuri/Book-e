@@ -1,170 +1,191 @@
-// js/materias.js
-
 export function initMaterias(userId) {
     const btnAddMateria = document.getElementById('btn-add-materia-app');
     const inputNome = document.getElementById('nome-materia-app');
     const inputCiclo = document.getElementById('ciclo-materia-app');
-    const inputFormula = document.getElementById('formula-materia-app'); 
-    // --beatriz-- selecionando os inputs de aprovação e limite de faltas
+    const inputFormula = document.getElementById('formula-materia-app');
     const inputAprovacao = document.getElementById('aprovacao-materia-app');
     const inputLimiteFaltas = document.getElementById('limite-faltas-app');
     const listaUl = document.getElementById('lista-materias-app');
 
-    const adicionarMateriaNaTela = (idMateria, nome, ciclo) => {
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.justifyContent = 'space-between';
-        li.style.alignItems = 'center';
-        li.style.marginBottom = '4px';
-        li.style.padding = '4px 8px';
-        li.style.backgroundColor = '#b3d2ff';
-        li.style.border = '2px solid #94add3';
-        li.style.color = '#ffffff';
+    const API = "http://localhost:8081/api";
+
+    async function getUniversidadeUsuarioId() {
+        const res = await fetch(`${API}/universidadeUsuario/usuario/${userId}`);
+
+        if (!res.ok) throw new Error("Falha ao buscar universidade_usuario");
+
+        const data = await res.json();
+
+        const obj = Array.isArray(data) ? data[0] : data;
+
+        const id =
+            obj?.iduniversidadeusuario ??
+            obj?.idUniversidadeUsuario ??
+            obj?.id_universidade_usuario ??
+            obj?.id;
+
+        if (!id) throw new Error("Sem vínculo de universidade_usuario");
+
+        return id;
+    }
+
+    function extrairIdMateria(obj) {
+        return obj?.idmateria ?? obj?.idMateria ?? obj?.id ?? null;
+    }
+
+    const adicionarMateriaNaTela = (id, nome, ciclo) => {
+        const li = document.createElement("li");
+
+        Object.assign(li.style, {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "4px",
+            padding: "4px 8px",
+            backgroundColor: "#b3d2ff",
+            border: "2px solid #94add3",
+            color: "#fff"
+        });
 
         li.innerHTML = `
-            <span>${nome} (Ciclo ${ciclo})</span> 
-            <span class="btn-del-materia" data-id="${idMateria}" style="color:#ff5555; cursor:pointer; font-weight:bold; position:static;">[X]</span>
+            <span>${nome} (Ciclo ${ciclo})</span>
+            <span class="btn-del-materia" data-id="${id}" style="cursor:pointer;color:#ff5555;font-weight:bold;">[X]</span>
         `;
+
         listaUl.appendChild(li);
     };
 
     const carregarMaterias = async () => {
         try {
-            listaUl.innerHTML = '<li>Carregando matérias...</li>';
-            const response = await fetch(`http://localhost:8081/api/materias/buscar/${userId}`);
+            const res = await fetch(`${API}/materias/buscar/${userId}`);
 
-            if (response.status === 404) {
-                listaUl.innerHTML = ''; 
+            if (res.status === 404) {
+                listaUl.innerHTML = "";
                 return;
             }
 
-            if (!response.ok) throw new Error("Erro ao carregar do servidor.");
+            if (!res.ok) throw new Error("Erro ao carregar matérias");
 
-            const materias = await response.json();
-            listaUl.innerHTML = ''; 
+            const materias = await res.json();
 
-            materias.forEach(materia => {
-                const ciclo = materia.semestre_materia || materia.semestremateria;
-                adicionarMateriaNaTela(materia.idmateria, materia.nomemateria, ciclo);
+            listaUl.innerHTML = "";
+
+            materias.forEach(m => {
+                const id = extrairIdMateria(m);
+                if (!id) return;
+
+                const ciclo = m.semestre_materia ?? m.semestremateria;
+                adicionarMateriaNaTela(id, m.nomemateria, ciclo);
             });
 
-        } catch (error) {
-            console.error("Erro ao carregar matérias:", error);
-            listaUl.innerHTML = '<li style="color:red;">Erro ao carregar matérias.</li>';
+        } catch (err) {
+            console.error(err);
+            listaUl.innerHTML = "<li style='color:red;'>Erro ao carregar</li>";
         }
     };
 
-    // Lógica de 3 etapas (POST Materia -> POST Formula -> POST Faltas)
-    btnAddMateria.addEventListener('click', async () => {
-        const nomeMateria = inputNome.value.trim();
-        const cicloMateria = Number(inputCiclo.value);
-        const textoFormula = inputFormula.value.trim();
-        // --beatriz-- capturando os novos valores
+    btnAddMateria.addEventListener("click", async () => {
+        const nome = inputNome.value.trim();
+        const ciclo = Number(inputCiclo.value);
+        const formula = inputFormula.value.trim();
         const aprovacao = Number(inputAprovacao.value);
         const limiteFaltas = Number(inputLimiteFaltas.value);
 
-        if (!nomeMateria || !cicloMateria || !textoFormula || !aprovacao || !limiteFaltas) {
-            alert("Preencha todos os campos: Nome, Ciclo, Fórmula, Aprovação e Limite de Faltas!");
+        if (!nome || !ciclo || !formula || aprovacao <= 0 || limiteFaltas <= 0) {
+            alert("Preencha corretamente os campos");
             return;
         }
 
-        const idUniUsuario = Number(localStorage.getItem('currentIdUniversidadeUsuario')); 
+        let idUniUsuario;
 
-        if (!idUniUsuario) {
-            alert("Erro: ID da universidade não encontrado. Faça login novamente.");
+        try {
+            idUniUsuario = await getUniversidadeUsuarioId();
+        } catch (err) {
+            alert(err.message);
             return;
         }
-
-        const payloadMateria = {
-            semestremateria: cicloMateria,
-            nomemateria: nomeMateria,
-            iduniversidadeusuario: idUniUsuario,
-            // --beatriz-- salvando aprovacao na matéria
-            aprovacao: aprovacao
-        };
 
         try {
             btnAddMateria.disabled = true;
             btnAddMateria.innerText = "SALVANDO...";
 
-            // 1. Cria a Matéria
-            const responseMateria = await fetch("http://localhost:8081/api/materias/criar", {
+            const resMateria = await fetch(`${API}/materias/criar`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payloadMateria)
+                body: JSON.stringify({
+                    nomemateria: nome,
+                    semestremateria: ciclo,
+                    aprovacao,
+                    iduniversidadeusuario: idUniUsuario
+                })
             });
 
-            if (!responseMateria.ok) throw new Error("Erro ao criar a matéria.");
-            const novaMateriaSalva = await responseMateria.json();
+            const text = await resMateria.text();
 
-            // 2. Cria a Fórmula usando o ID da matéria recém-criada
-            const payloadFormula = {
-                expressao: textoFormula,
-                idmateria: novaMateriaSalva.idmateria
-            };
+            if (!resMateria.ok) {
+                throw new Error(text || "Erro ao criar matéria");
+            }
 
-            await fetch("http://localhost:8081/api/formulas", {
+            const materia = JSON.parse(text);
+
+            const idMateria = extrairIdMateria(materia);
+
+            if (!idMateria) {
+                throw new Error("idmateria não retornado pelo backend");
+            }
+
+            await fetch(`${API}/formulas`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payloadFormula)
+                body: JSON.stringify({
+                    expressao: formula,
+                    idmateria: idMateria
+                })
             });
 
-            // --beatriz-- 3. Criando o registro de faltas inicial
-            const payloadFaltas = {
-                idmateria: novaMateriaSalva.idmateria,
-                numfaltas: 0,
-                limitefaltas: limiteFaltas
-            };
-
-            await fetch("http://localhost:8081/api/faltas/criar", {
+            await fetch(`${API}/faltas/criar`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payloadFaltas)
+                body: JSON.stringify({
+                    idmateria: idMateria,
+                    numfaltas: 0,
+                    limitefaltas: limiteFaltas
+                })
             });
 
-            // Adiciona na tela
-            const ciclo = novaMateriaSalva.semestre_materia || novaMateriaSalva.semestremateria;
-            adicionarMateriaNaTela(novaMateriaSalva.idmateria, novaMateriaSalva.nomemateria, ciclo);
+            adicionarMateriaNaTela(idMateria, nome, ciclo);
 
-            // Limpa os campos
-            inputNome.value = '';
-            inputCiclo.value = '';
-            inputFormula.value = '';
-            // --beatriz-- limpando campos extras
-            inputAprovacao.value = '';
-            inputLimiteFaltas.value = '';
+            inputNome.value = "";
+            inputCiclo.value = "";
+            inputFormula.value = "";
+            inputAprovacao.value = "";
+            inputLimiteFaltas.value = "";
 
-            window.dispatchEvent(new Event('materiaAdicionada'));
-
-        } catch (error) {
-            console.error("Erro ao salvar:", error);
-            alert("Falha ao salvar: " + error.message);
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao salvar: " + err.message);
         } finally {
             btnAddMateria.disabled = false;
             btnAddMateria.innerText = "ADICIONAR";
         }
     });
 
-    listaUl.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('btn-del-materia')) {
-            const idMateria = e.target.getAttribute('data-id');
-            const nomeMateriaText = e.target.previousElementSibling.textContent;
+    listaUl.addEventListener("click", async (e) => {
+        if (!e.target.classList.contains("btn-del-materia")) return;
 
-            const confirmar = confirm(`Deseja realmente excluir a matéria:\n${nomeMateriaText}?`);
-            if (!confirmar) return;
+        const id = e.target.dataset.id;
 
-            try {
-                // Ao deletar a matéria, seu backend (com o CascadeType.ALL que configuramos) 
-                // cuidará de deletar a Fórmula e as Faltas automaticamente.
-                const response = await fetch(`http://localhost:8081/api/materias/${idMateria}`, { method: 'DELETE' });
-                if (!response.ok) throw new Error(await response.text());
+        try {
+            const res = await fetch(`${API}/materias/${id}`, {
+                method: "DELETE"
+            });
 
-                e.target.closest('li').remove();
-                window.dispatchEvent(new Event('materiaAdicionada'));
-            } catch (error) {
-                console.error("Erro ao deletar:", error);
-                alert("Erro ao excluir matéria: " + error.message);
-            }
+            if (!res.ok) throw new Error(await res.text());
+
+            e.target.closest("li").remove();
+
+        } catch (err) {
+            alert("Erro ao excluir: " + err.message);
         }
     });
 
