@@ -19,15 +19,15 @@ public class Universidade{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_uni")
-    private Long id_uni;
+    private Long iduni;
 
     @Column(name = "uni_nome", length = 100, nullable = false)
-    private String uni_nome;
+    private String uninome;
 
     @OneToMany(mappedBy = "universidade", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UniversidadeUsuario> cursos = new HashSet<>();
 
     public Universidade(String uni_nome) {
-        this.uni_nome = uni_nome;
+        this.uninome = uni_nome;
     }
 }

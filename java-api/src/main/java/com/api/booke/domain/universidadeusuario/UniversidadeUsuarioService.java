@@ -100,10 +100,10 @@ public class UniversidadeUsuarioService {
     // 🔁 Conversão para ResponseDto
     private UniversidadeUsuarioResponseDto toResponse(UniversidadeUsuario entidade) {
         return new UniversidadeUsuarioResponseDto(
-                entidade.getId_universidade_usuario(),
-                entidade.getCurso().getId_curso(),
-                entidade.getUniversidade().getId_uni(),
-                entidade.getUsuario().getId_user()
+                entidade.getIduniversidadeusuario(),
+                entidade.getCurso().getIdcurso(),
+                entidade.getUniversidade().getIduni(),
+                entidade.getUsuario().getIduser()
         );
     }
 
@@ -112,16 +112,23 @@ public class UniversidadeUsuarioService {
             .orElseThrow(() -> new RuntimeException("UniversidadeUsuario não encontrado"));
 
     return new UniversidadeUsuarioFullResponseDto(
-            entidade.getId_universidade_usuario(),
+            entidade.getIduniversidadeusuario(),
 
-            entidade.getUniversidade().getId_uni(),
-            entidade.getUniversidade().getUni_nome(),
+            entidade.getUniversidade().getIduni(),
+            entidade.getUniversidade().getUninome(),
 
-            entidade.getCurso().getId_curso(),
-            entidade.getCurso().getNome_curso(),
+            entidade.getCurso().getIdcurso(),
+            entidade.getCurso().getNomecurso(),
 
-            entidade.getUsuario().getId_user(),
+            entidade.getUsuario().getIduser(),
             entidade.getUsuario().getNicknameuser()
     );
 }
+
+public List<UniversidadeUsuarioResponseDto> getByUserId(Long idUser) {
+        return universidadeUsuarioRepository.findByUsuarioIduser(idUser)
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
 }

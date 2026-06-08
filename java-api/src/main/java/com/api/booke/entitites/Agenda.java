@@ -16,7 +16,7 @@ public class Agenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_agenda;
+    private Long idagenda;
 
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)

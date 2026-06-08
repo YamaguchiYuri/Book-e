@@ -1,5 +1,5 @@
 package com.api.booke.entitites;
-
+import java.util.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ public class Materia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_materia;
+    private Long idmateria;
 
     @ManyToOne
     @JoinColumn(name = "id_universidade_usuario", nullable = false)
@@ -24,5 +24,14 @@ public class Materia {
     private int semestre_materia;
 
     @Column(length = 40, nullable = false)
-    private String nome_materia;
+    private String nomemateria;
+
+    @OneToMany(mappedBy = "materia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Formula> formula;
+
+    @OneToMany(mappedBy = "materia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NotaDesempenho> nota;
+    /*para apagar as anotações junto com materia */
+    @OneToMany(mappedBy = "materia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Anotacao> anotacoes;
 }

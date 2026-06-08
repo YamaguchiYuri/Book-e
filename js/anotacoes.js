@@ -1,12 +1,12 @@
-import { saveData, loadData } from './storage.js';
 import { getNewZIndex } from './janelas.js';
 
-let currentEditingNoteId = null; // null = Criando, ou um ID = Editando
+let CURRENT_USER_ID = null;
+let currentEditingNoteId = null; // null = Criando, ID = Editando
 
-// Chave de storage específica deste módulo
-let NOTES_STORAGE_KEY = '';
+const API_URL_ANOTACOES = 'http://localhost:8081/api/anotacoes';
+const API_URL_MATERIAS = 'http://localhost:8081/api/materias';
 
-// Seletores (só os que este módulo usa)
+// Seletores
 const noteListArea = document.getElementById('note-list-area');
 const btnShowNewNoteModal = document.getElementById('btn-show-new-note-modal');
 const subModalOverlay = document.getElementById('sub-modal-overlay');
@@ -16,147 +16,202 @@ const btnCancelNewNote = document.getElementById('btn-cancel-new-note');
 const btnCancelNewNote2 = document.getElementById('btn-cancel-new-note-2');
 const newNoteTitleInput = document.getElementById('new-note-title');
 const newNoteContentInput = document.getElementById('new-note-content');
+const newNoteMateriaSelect = document.getElementById('new-note-materia');
 
-
-
-function loadNotes() {
-    return loadData(NOTES_STORAGE_KEY);
+// ==========================================
+// FUNÇÕES DE COMUNICAÇÃO COM A API
+// ==========================================
+async function apiGet(url) {
+    const response = await fetch(url);
+    if (response.status === 404) return []; 
+    if (!response.ok) throw new Error(await response.text());
+    return response.json();
 }
 
-function saveNotes(notesArray) {
-    saveData(NOTES_STORAGE_KEY, notesArray);
-}
-
-function renderNotes() {
-    const notes = loadNotes();
-    noteListArea.innerHTML = ''; 
-
-    notes.forEach(note => {
-        const noteHTML = `
-            <div class="note-item" data-note-id="${note.id}">
-                <span class="note-delete-btn" data-note-id="${note.id}">X</span>
-                <p>${note.title}</p>
-                <button class="note-folder-btn" data-note-id="${note.id}">
-                    <img src="./assets/neon-folder.png" alt="Pasta">
-                </button>
-            </div>
-        `;
-        noteListArea.innerHTML += noteHTML;
+async function apiSend(url, data, method) {
+    const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : null
     });
+    if (!response.ok) throw new Error(await response.text());
     
-    // Listener de deletar
-    noteListArea.querySelectorAll('.note-delete-btn').forEach(button => {
-        button.addEventListener('click', handleDeleteNote);
-    });
-
-    // abrir e edita
-    noteListArea.querySelectorAll('.note-folder-btn').forEach(button => {
-        button.addEventListener('click', openModalForEdit);
-    });
+    const contentType = response.headers.get('Content-Type');
+    if (!contentType || !contentType.includes('application/json')) return null;
+    return response.json();
 }
 
-/**
---APAGAR NOTAS
- * @param {Event} e
- */
-function handleDeleteNote(e) {
-    // Impede que o clique no "X" também abra a pasta
-    e.stopPropagation(); 
+// ==========================================
+// CARREGAR E RENDERIZAR
+// ==========================================
+async function renderNotes() {
+    try {
+        // 1. Busca todas as matérias e acha as do ciclo atual
+        const materias = await apiGet(`${API_URL_MATERIAS}/buscar/${CURRENT_USER_ID}`);
+        const semestreSelecionado = Number(localStorage.getItem('semestreVisualizado')) || 1;
+        
+        const materiasDoSemestre = materias.filter(m => {
+            const ciclo = m.semestre_materia || m.semestremateria;
+            return Number(ciclo) === semestreSelecionado;
+        });
+        
+        // Pega apenas os IDs das matérias válidas do ciclo atual
+        const validMateriaIds = materiasDoSemestre.map(m => m.idmateria);
 
-    const button = e.target;
-    const noteIdToDelete = button.dataset.noteId;
+        // 2. Busca as anotações e filtra pelas matérias permitidas
+        const notes = await apiGet(`${API_URL_ANOTACOES}/usuario/${CURRENT_USER_ID}`);
+        
+        const notesDoSemestre = notes.filter(n => {
+            // Verifica onde o ID da matéria veio no DTO (direto ou dentro do objeto materia)
+            const matId = n.idmateria || (n.materia && n.materia.idmateria);
+            return validMateriaIds.includes(matId);
+        });
 
-    if (!confirm('Tem certeza que deseja apagar esta anotação?')) {
-        return; // Não faz nada se o usuário cancelar
+        // 3. Renderiza a tela
+        noteListArea.innerHTML = ''; 
+        if (notesDoSemestre.length === 0) {
+            noteListArea.innerHTML = '<p style="color:white; font-size:10px;">Nenhuma anotação neste ciclo.</p>';
+        } else {
+            notesDoSemestre.forEach(note => {
+                const noteId = note.id || note.idanotacao;
+                // No DTO é provavel que venha como "titulo", adaptando para evitar erro
+                const titulo = note.titulo || note.title || 'Sem Título'; 
+                
+                const noteHTML = `
+                    <div class="note-item" data-note-id="${noteId}">
+                        <span class="note-delete-btn" data-note-id="${noteId}">X</span>
+                        <p>${titulo}</p>
+                        <button class="note-folder-btn" data-note-id="${noteId}">
+                            <img src="./assets/neon-folder.png" alt="Pasta">
+                        </button>
+                    </div>
+                `;
+                noteListArea.innerHTML += noteHTML;
+            });
+        }
+
+        // Atribui os eventos de clique novamente
+        noteListArea.querySelectorAll('.note-delete-btn').forEach(btn => {
+            btn.addEventListener('click', handleDeleteNote);
+        });
+        noteListArea.querySelectorAll('.note-folder-btn').forEach(btn => {
+            btn.addEventListener('click', openModalForEdit);
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar anotações:", error);
+        noteListArea.innerHTML = '<p style="color:red; font-size:10px;">Erro ao carregar anotações.</p>';
     }
-
-    //  Carrega as notas
-    let notes = loadNotes();
-    
-    //Filtra, removendo a nota com o ID clicado
-    // (O '!=' funciona bem aqui pois 'note.id' é número e 'noteIdToDelete' é string)
-    notes = notes.filter(note => note.id != noteIdToDelete);
-
-    saveNotes(notes);
-
-    //renderiza a tela para mostrar a mudança
-    renderNotes();
 }
 
-function handleSaveNote() {
-    const title = newNoteTitleInput.value;
-    const content = newNoteContentInput.value;
+// ==========================================
+// AÇÕES DO USUÁRIO
+// ==========================================
+async function handleSaveNote() {
+    const titulo = newNoteTitleInput.value.trim();
+    const texto = newNoteContentInput.value.trim();
+    const idmateria = newNoteMateriaSelect.value;
 
-    if (!title) {
-        alert('Qual o titulo da sua anotação?');
+    if (!titulo || !idmateria || !texto) {
+        alert('Por favor, preencha a matéria, o título e o conteúdo.');
         return;
     }
 
-    let notes = loadNotes();
+    try {
+        if (currentEditingNoteId === null) {
+            // POST - Criar
+            await apiSend(`${API_URL_ANOTACOES}/criar`, {
+                titulo: titulo,
+                texto: texto,
+                iduser: Number(CURRENT_USER_ID),
+                idmateria: Number(idmateria)
+            }, 'POST');
+        } else {
+            // PUT - Atualizar
+            await apiSend(`${API_URL_ANOTACOES}/${currentEditingNoteId}`, {
+                titulo: titulo,
+                texto: texto,
+                idmateria: Number(idmateria)
+            }, 'PUT');
+        }
 
-    if (currentEditingNoteId === null) {
-        const newNote = {
-            id: Date.now(),
-            title: title,
-            content: content
-        };
-        notes.push(newNote);
-    } else {
-        notes = notes.map(note => {
-            if (note.id == currentEditingNoteId) {
-                // Retorna a nota ATUALIZADA
-                return { 
-                    ...note, // Mantém o ID original
-                    title: title, 
-                    content: content 
-                };
-            }
-            // Retorna as outras notas sem alteração
-            return note;
-        });
+        closeNewNoteModal();
+        await renderNotes();
+    } catch (error) {
+        alert("Erro ao salvar a anotação: " + error.message);
     }
+}
 
-    saveNotes(notes);  // Salva o array modificado
-    renderNotes();     // Atualiza a tela
-    closeNewNoteModal(); // Fecha o modal
+async function handleDeleteNote(e) {
+    e.stopPropagation(); 
+    const noteIdToDelete = e.target.dataset.noteId;
+
+    if (!confirm('Tem certeza que deseja apagar esta anotação?')) return;
+
+    try {
+        await apiSend(`${API_URL_ANOTACOES}/${noteIdToDelete}`, null, 'DELETE');
+        await renderNotes();
+    } catch (error) {
+        alert("Erro ao deletar: " + error.message);
+    }
+}
+
+// ==========================================
+// CONTROLE DE MODAL
+// ==========================================
+async function populateMateriaDropdown() {
+    const materias = await apiGet(`${API_URL_MATERIAS}/buscar/${CURRENT_USER_ID}`);
+    const semestreSelecionado = Number(localStorage.getItem('semestreVisualizado')) || 1;
+    
+    const materiasDoSemestre = materias.filter(m => {
+        const ciclo = m.semestre_materia || m.semestremateria;
+        return Number(ciclo) === semestreSelecionado;
+    });
+
+    newNoteMateriaSelect.innerHTML = '<option value="">Selecione a Matéria</option>';
+    materiasDoSemestre.forEach(m => {
+        newNoteMateriaSelect.innerHTML += `<option value="${m.idmateria}">${m.nomemateria}</option>`;
+    });
 }
 
 function _openModal() {
-    // zindex
     subModalOverlay.style.zIndex = getNewZIndex();
     modalNovaAnotacao.style.zIndex = getNewZIndex();
-
     subModalOverlay.classList.remove('hidden');
     modalNovaAnotacao.classList.remove('hidden');
-
-    newNoteTitleInput.focus(); // Foca no título
 }
 
-/**
- * ATUALIZADO: Prepara o modal para CRIAR uma nova nota.
- */
-function openModalForCreate() {
-    currentEditingNoteId = null; // Garante que estamos criando
+async function openModalForCreate() {
+    currentEditingNoteId = null;
     newNoteTitleInput.value = '';
     newNoteContentInput.value = '';
     
-    _openModal(); // Chama a função base
+    await populateMateriaDropdown();
+    _openModal();
+    newNoteTitleInput.focus();
 }
-function openModalForEdit(e) {
+
+async function openModalForEdit(e) {
     const noteIdToEdit = e.currentTarget.dataset.noteId;
     
-    const notes = loadNotes();
-    const note = notes.find(n => n.id == noteIdToEdit);
+    try {
+        // Busca os dados atualizados desta anotação no banco
+        const note = await apiGet(`${API_URL_ANOTACOES}/buscar/${noteIdToEdit}`);
+        
+        currentEditingNoteId = note.id || note.idanotacao; 
+        newNoteTitleInput.value = note.titulo;
+        newNoteContentInput.value = note.texto;
 
-    if (!note) {
-        alert('Erro: Anotação não encontrada.');
-        return;
+        await populateMateriaDropdown();
+        
+        // Seleciona a matéria atual da anotação
+        const matId = note.idmateria || (note.materia && note.materia.idmateria);
+        newNoteMateriaSelect.value = matId;
+
+        _openModal();
+    } catch (error) {
+        alert("Erro ao abrir anotação: " + error.message);
     }
-    currentEditingNoteId = note.id; 
-    newNoteTitleInput.value = note.title;
-    newNoteContentInput.value = note.content;
-
-    _openModal(); // Chama a função base
 }
 
 function closeNewNoteModal() {
@@ -165,11 +220,24 @@ function closeNewNoteModal() {
     currentEditingNoteId = null;
 }
 
+// ==========================================
+// EVENTOS GLOBAIS
+// ==========================================
+// Se o usuário mudar de semestre nas setinhas, as pastas se atualizam sozinhas!
+window.addEventListener('semestreMudou', async () => {
+    if (CURRENT_USER_ID) await renderNotes();
+});
 
-// funçao exportada
+// Se o usuário criar/excluir uma matéria, ela some/aparece do dropdown de anotações
+window.addEventListener('materiaAdicionada', async () => {
+    if (CURRENT_USER_ID) await renderNotes();
+});
+
+// ==========================================
+// INICIALIZAÇÃO
+// ==========================================
 export function initAnotacoes(userId) { 
-
-    NOTES_STORAGE_KEY = `booke_anotacoes_${userId}`;
+    CURRENT_USER_ID = userId;
 
     btnShowNewNoteModal.addEventListener('click', openModalForCreate); 
     btnSaveNewNote.addEventListener('click', handleSaveNote);
@@ -177,6 +245,5 @@ export function initAnotacoes(userId) {
     btnCancelNewNote2.addEventListener('click', closeNewNoteModal);
     
     renderNotes(); 
-
     console.log(`Módulo de Anotações Inicializado para ${userId}.`);
 }

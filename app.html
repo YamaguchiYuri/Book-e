@@ -6,6 +6,156 @@
     <link rel="stylesheet" href="./css/formulario.css">
     <link rel="stylesheet" href="./css/app.css">
     <script type="module" src="./js/app.js"></script>
+    
+<style>
+        /* TEMA "AGENDA ACADÊMICA" E ESTILO DO FORMULÁRIO DE NOTAS */
+        .add-nota-form-container {
+            height: auto !important; 
+            min-height: min-content !important;
+            padding-bottom: 10px !important;
+        }
+
+        #add-nota-form {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important; 
+        }
+
+        #add-nota-form .input-group {
+            display: flex !important;
+            flex-direction: column !important;
+            margin: 0 !important; 
+        }
+
+        #add-nota-form label {
+            font-size: 9px !important;
+            margin-bottom: 4px !important;
+            color: #ffffff !important;
+            font-family: 'Press Start 2P', cursive !important;
+        }
+
+        #add-nota-form select,
+        #add-nota-form input {
+            background-color: #94add3 !important; 
+            color: #ffffff !important; 
+            border: 2px solid #7a92b8 !important; 
+            border-style: inset !important; 
+            font-family: 'Press Start 2P', cursive !important;
+            font-size: 10px !important;
+            padding: 10px 5px !important; 
+            width: 100% !important;
+            box-sizing: border-box !important;
+            border-radius: 0 !important;
+            margin-bottom: 0 !important; 
+            display: block !important;
+            height: 35px !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        #add-nota-form input::placeholder { color: #5e7699 !important; }
+        
+        #add-nota-form select:focus,
+        #add-nota-form input:focus {
+            background-color: #a8c0e6 !important; 
+            border-color: #ffffff !important;
+        }
+        
+        #add-nota-form input[name="valor"] {
+            text-align: center !important;
+            font-weight: bold !important;
+            font-size: 12px !important;
+        }
+        
+        #add-nota-form .btn {
+            background-color: #90f990 !important; 
+            color: #ffffff !important; 
+            text-shadow: 1px 1px 0 #489c48 !important; 
+            border: none !important;
+            box-shadow: 0 4px 0 #489c48, 0 -2px 0 #489c48 !important;
+            padding: 10px !important;
+            width: 100% !important; 
+            cursor: pointer !important;
+            margin-top: 10px !important;
+        }
+        
+        #add-nota-form .btn:active {
+            box-shadow: none !important;
+            transform: translate(0, 4px) !important; 
+        }
+
+        .delete-nota-btn {
+            display: inline-block !important;
+            background-color: #ff5555 !important;
+            color: #fff !important;
+            border: 2px solid #990000 !important;
+            padding: 2px 4px !important; 
+            font-size: 7px !important; 
+            font-family: 'Press Start 2P', cursive !important;
+            cursor: pointer !important;
+            margin-left: 5px !important;
+            box-shadow: 1px 1px 0px #550000 !important; 
+            line-height: 1 !important;
+            vertical-align: middle !important;
+        }
+        
+        .delete-nota-btn:active {
+            transform: translate(1px, 1px) !important;
+            box-shadow: none !important;
+        }
+        
+        .materia-notas-lista li {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            background-color: #b3d2ff !important;
+            color: #142726 !important;
+            padding: 4px 6px !important; 
+            margin-bottom: 2px !important; 
+            border: 2px solid #94add3 !important;
+            font-size: 9px !important; 
+            height: auto !important;
+            min-height: 20px !important;
+        }
+        
+        .materia-notas-lista ul {
+            padding: 5px !important;
+            margin: 0 !important;
+            gap: 0 !important; 
+        }
+
+        /* WIDGET SEMESTRE */
+        #widget-semestre {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 15px;
+            background-color: #94add3;
+            border: 2px solid #ffffff;
+            box-shadow: 2px 2px 0px #142726;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            color: #ffffff;
+        }
+        .btn-seta {
+            background-color: #b3d2ff;
+            border: 2px solid #ffffff;
+            color: #142726;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px 10px;
+            box-shadow: 2px 2px 0px #5e7699;
+        }
+        .btn-seta:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -44,12 +194,15 @@
                     <label for="ciclo-materia-app">Ciclo/Semestre:</label>
                     <input type="number" id="ciclo-materia-app" placeholder="Ex: 3">
 
+                    <label for="formula-materia-app">Fórmula da Matéria:</label>
+                    <input type="text" id="formula-materia-app" placeholder="Ex: (P1+P2)/2">
+
                     <button type="button" id="btn-add-materia-app" class="btn btnOk">ADICIONAR</button>
                 </div>
             </div>
         </div>
     </main>
-<!--essa parte da agenda-->
+
     <div id="modal-agenda" class="pixel_dialog hidden">
         <div class="dialog_header">
             <span>AGENDA ACADEMICA</span>
@@ -57,7 +210,6 @@
         </div>
         
         <div class="dialog_content content-agenda">
-            
             <div id="lista-agenda">
                 </div>
 
@@ -70,7 +222,6 @@
                 
                 <button id="btnAdd-agenda" class="btn btnMateria">Adicionar</button>
             </div>
-            
         </div>
     </div>
 
@@ -80,7 +231,6 @@
             <span class="close_button">X</span>
         </div>
         <div class="dialog_content content-anotacoes">
-            
             <div id="note-list-area">
                 </div>
 
@@ -100,6 +250,9 @@
             <span id="btn-cancel-new-note" class="close_button">X</span>
         </div>
         <div class="dialog_content content-nova-anotacao">
+            <label for="new-note-materia">MATÉRIA:</label>
+            <select id="new-note-materia"></select>
+
             <label for="new-note-title">TÍTULO:</label>
             <input type="text" id="new-note-title">
             
@@ -114,16 +267,16 @@
     </div>
 
     <div id="modal-notas" class="pixel_dialog hidden">
-        <div class="dialog_header">
-            <span>NOTAS E FALTAS</span>
-            <span class="close_button">X</span>
-        </div>
-        <div class="dialog_content content-notas">
-            <ul id="notas-list-area">
-                
-                </ul>
-        </div>
+            <div class="dialog_header">
+                <span>NOTAS E FALTAS</span>
+                <span class="close_button">X</span>
+            </div>
+            <div class="dialog_content content-notas">
+                <ul id="notas-list-area">
+                    </ul>
+            </div>
     </div>
+
     <div id="agenda-widget" class="pixel_dialog">
         <div class="dialog_header">
             <span>PRÓXIMOS EVENTOS</span>
@@ -133,104 +286,12 @@
                 </ul>
         </div>
     </div>
-    <div id="modal-agenda" class="pixel_dialog hidden">
 
-<style>
-    /* ========================================================= */
-    /* TEMA "AGENDA ACADÊMICA" (VERSÃO COMPACTA NA LISTA)        */
-    /* ========================================================= */
+    <div id="widget-semestre">
+        <button id="btn-semestre-voltar" class="btn-seta"><</button>
+        <span id="display-semestre">CICLO 1</span>
+        <button id="btn-semestre-avancar" class="btn-seta">></button>
+    </div>
 
-    /* 1. INPUTS E SELECTS (Mantido igual - Azulado e Afundado) */
-    #add-nota-form select,
-    #add-nota-form input {
-        background-color: #94add3 !important; 
-        color: #ffffff !important; 
-        border: 2px solid #7a92b8 !important; 
-        border-style: inset !important; 
-        font-family: 'Press Start 2P', cursive !important;
-        font-size: 10px !important;
-        padding: 10px 5px !important; 
-        width: 100% !important;
-        box-sizing: border-box !important;
-        border-radius: 0 !important;
-        margin-bottom: 10px !important;
-        display: block !important;
-        height: 35px !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-    #add-nota-form input::placeholder { color: #5e7699 !important; }
-    #add-nota-form select:focus,
-    #add-nota-form input:focus {
-        background-color: #a8c0e6 !important; 
-        border-color: #ffffff !important;
-    }
-    #add-nota-form input[name="valor"] {
-        text-align: center !important;
-        font-weight: bold !important;
-        font-size: 12px !important;
-    }
-
-    /* 2. BOTÃO SALVAR (Mantido igual - Verde Neon) */
-    #add-nota-form .btn {
-        background-color: #90f990 !important; 
-        color: #ffffff !important; 
-        text-shadow: 1px 1px 0 #489c48 !important; 
-        border: none !important;
-        box-shadow: 0 4px 0 #489c48, 0 -2px 0 #489c48 !important;
-        padding: 10px !important;
-        width: 100% !important; 
-        cursor: pointer !important;
-        margin-top: 10px !important;
-    }
-    #add-nota-form .btn:active {
-        box-shadow: none !important;
-        transform: translate(0, 4px) !important; 
-    }
-
-    /* 3. BOTÃO [DEL] (AJUSTADO: MENOR E MAIS COMPACTO) */
-    .delete-nota-btn {
-        display: inline-block !important;
-        background-color: #ff5555 !important;
-        color: #fff !important;
-        border: 2px solid #990000 !important;
-        /* Reduzi o padding para o botão ficar mais baixinho */
-        padding: 2px 4px !important; 
-        font-size: 7px !important; /* Letra um pouco menor */
-        font-family: 'Press Start 2P', cursive !important;
-        cursor: pointer !important;
-        margin-left: 5px !important;
-        box-shadow: 1px 1px 0px #550000 !important; /* Sombra menor */
-        line-height: 1 !important;
-        vertical-align: middle !important;
-    }
-    .delete-nota-btn:active {
-        transform: translate(1px, 1px) !important;
-        box-shadow: none !important;
-    }
-
-    /* 4. LISTA DE MATÉRIAS (AJUSTADO: LINHAS MAIS PRÓXIMAS) */
-    .materia-notas-lista li {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        background-color: #b3d2ff !important;
-        color: #142726 !important;
-        /* Reduzi drasticamente o padding e a margem */
-        padding: 4px 6px !important; 
-        margin-bottom: 2px !important; /* Espaço entre as linhas diminuiu */
-        border: 2px solid #94add3 !important;
-        font-size: 9px !important; /* Texto um pouco mais compacto */
-        height: auto !important;
-        min-height: 20px !important;
-    }
-    
-    /* Remove margem extra da lista UL se houver */
-    .materia-notas-lista ul {
-        padding: 5px !important;
-        margin: 0 !important;
-        gap: 0 !important; /* Remove gap do flex se tiver */
-    }
-</style>
 </body>
 </html>

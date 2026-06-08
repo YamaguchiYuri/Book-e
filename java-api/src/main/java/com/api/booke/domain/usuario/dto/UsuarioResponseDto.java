@@ -16,9 +16,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class UsuarioResponseDto {
-    private Long id_user;
+    private Long iduser;
     private String nicknameuser;
     private String email;
     private LocalDate dt_nasciment_em;
     private LocalDateTime dt_criado_em;
+    private String semestreatual;
 }

@@ -27,3 +27,15 @@ public class FormularioInicialController {
         return ResponseEntity.ok(response);
     }
 }
+
+/*body:
+ *  {
+  "iduser": 1,
+  "dt_nasciment_em": "2004-10-17",
+  "semestreatual": 3,
+
+  "uninome": "Universidade de São Paulo",
+  "nomecurso": "Ciência da Computação",
+  "semestre": 3
+}
+ */

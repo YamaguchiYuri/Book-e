@@ -78,7 +78,7 @@ public class UniversidadeController {
         List<UniversidadeResponseDto> universidades = universidadeService.listarUniversidades();
 
         return universidades.stream()
-                .filter(u -> u.getId_uni().equals(id))
+                .filter(u -> u.getIduni().equals(id))
                 .findFirst()
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)

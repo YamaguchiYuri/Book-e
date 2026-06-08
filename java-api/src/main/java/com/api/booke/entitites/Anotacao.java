@@ -18,11 +18,16 @@ public class Anotacao {
 
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
-    private Usuario usuario; // substitua pelo nome correto da entidade de usuário
+    private Usuario usuario;
 
     @Column(length = 100, nullable = false)
     private String titulo;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String texto;
+
+    @ManyToOne
+    @JoinColumn(name = "idmateria", nullable = false)
+    private Materia materia;
+
 }

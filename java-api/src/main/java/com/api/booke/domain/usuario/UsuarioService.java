@@ -25,11 +25,12 @@ public class UsuarioService {
     private UsuarioResponseDto toResponseUsuarioDTO (Usuario usuario){
         if(usuario == null) return null;
         return new UsuarioResponseDto(
-            usuario.getId_user(),
+            usuario.getIduser(),
             usuario.getNicknameuser(),
             usuario.getEmail(),
             usuario.getDt_nasciment_em(),
-            usuario.getData_criado_em()
+            usuario.getData_criado_em(),
+            usuario.getSemestreatual()
         );
     }
 
@@ -49,6 +50,8 @@ public class UsuarioService {
 
         return toResponseUsuarioDTO(usuarioRepository.save(usuario));
     }
+
+    
     public UsuarioResponseDto autenticar(String nickname, String senhaPura) throws AuthenticationException {
         Usuario usuario = usuarioRepository.findByNicknameuser(nickname)
             .orElseThrow(() -> 
@@ -71,6 +74,7 @@ public class UsuarioService {
         usuario.setNicknameuser(dto.getNicknameuser());
         usuario.setEmail(dto.getEmail());
         usuario.setDt_nasciment_em(dto.getDt_nasciment_em());
+        usuario.setSemestreatual(dto.getSemestreatual());
 
         String hashedPassword = passwordEncoder.encode(dto.getPasswordkey_user());
         usuario.setPasswordkey_user(hashedPassword);

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AgendaPostDto {
-    private Long id_user; // id do usuário
+    private Long iduser; // id do usuário
     private String tipo;
     private LocalDate data;
 }

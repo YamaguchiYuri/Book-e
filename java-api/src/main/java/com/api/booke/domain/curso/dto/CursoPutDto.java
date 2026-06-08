@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CursoPutDto {
-    private Long id_curso;
-    private String nome_curso;
+    private Long idcurso;
+    private String nomecurso;
     private Integer semestre;
 }

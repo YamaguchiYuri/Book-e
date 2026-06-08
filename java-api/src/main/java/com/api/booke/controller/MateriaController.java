@@ -56,11 +56,20 @@ public class MateriaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(novaMateria);
     }
 
+
+/*Materia body
+    {
+  "semestremateria": 3,
+  "nomemateria": "Cálculo I",
+  "iduniversidadeusuario": 1
+}
+    */
+
     /* PUT /{id} */
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarMateria(@PathVariable Long id, @RequestBody MateriaPutDto dto) {
         try {
-            dto.setId_materia(id);
+            dto.setIdmateria(id);
             MateriaResponseDto materiaAtualizada = materiaService.update(dto);
             return ResponseEntity.ok(materiaAtualizada);
         } catch (RuntimeException e) {

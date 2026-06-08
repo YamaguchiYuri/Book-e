@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class AgendaPutDto {
-    private Long id_agenda;
-    private Long id_user;
+    private Long idagenda;
+    private Long iduser;
     private String tipo;
     private LocalDate data;
 }

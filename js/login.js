@@ -81,24 +81,50 @@ form.addEventListener('submit', async (event) => {
 
         if (response.ok) { 
                     const usuario = await response.json(); 
-                    alert('Login bem-sucedido! Redirecionando...');
+                    
 
-                    // 1. Mantém o que já tinha
-                    localStorage.setItem('currentUser', usuario.nickname_user); 
-                    localStorage.setItem('currentUserId', usuario.id_user); 
+                    localStorage.setItem('currentUser', usuario.nicknameuser); 
+                    localStorage.setItem('currentUserId', usuario.iduser); 
 
-                    // 2. ADICIONA ESTA PARTE: Salva o ID da Universidade, se ele existir
-                    if (usuario.id_universidade_usuario) {
-                        localStorage.setItem('currentIdUniversidadeUsuario', usuario.id_universidade_usuario);
-                    }
 
-                    // 3. Mantém a lógica de redirecionamento intacta
-                    if (usuario.dt_nasciment_em) {
-                        window.location.href = '/app.html';
-                    } else {
-                        window.location.href = '/formulario.html';
+                    try {
+                        const urlBuscaUni = `http://localhost:8081/api/universidadeUsuario/usuario/${usuario.iduser}`;
+                        const responseUni = await fetch(urlBuscaUni);
+                        
+                        if (responseUni.ok) {
+                            const dadosUni = await responseUni.json();
+                            console.log(" JSON devolvido pelo Java (Universidade):", dadosUni);
+                            
+                           
+                            const objUniversidade = Array.isArray(dadosUni) ? dadosUni[0] : dadosUni;
+
+                            const idUniUser = objUniversidade?.iduniversidadeusuario || objUniversidade?.id_universidade_usuario;
+
+                            if (idUniUser) {
+                                localStorage.setItem('currentIdUniversidadeUsuario', idUniUser);
+                                console.log("ID da Universidade salvo no LocalStorage:", idUniUser);
+                            } else {
+                                alert("Aperta F12 e olha o Console!");
+                            }
+
+                        } else {
+                            console.log("Usuário logado, mas o Java retornou status 404 (Sem universidade).");
+                        }
+                    } catch (err) {
+                        console.error("Erro ao tentar buscar os dados da universidade:", err);
                     }
-                    }
+                    // ==============================================================
+
+                    // 3. Redirecionamento original
+                    // Adicionei um pequeno delay de meio segundo para dar tempo do LocalStorage gravar tudo com calma
+                    setTimeout(() => {
+                        if (usuario.dt_nasciment_em) {
+                            window.location.href = '/app.html';
+                        } else {
+                            window.location.href = '/formulario.html';
+                        }
+                    }, 500);
+                }
 
          else {
   

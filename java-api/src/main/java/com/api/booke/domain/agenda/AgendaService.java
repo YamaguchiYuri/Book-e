@@ -24,8 +24,8 @@ public class AgendaService {
     private AgendaResponseDto toResponseDto(Agenda agenda) {
         if (agenda == null) return null;
         return new AgendaResponseDto(
-            agenda.getId_agenda(),
-            agenda.getUsuario().getId_user(),
+            agenda.getIdagenda(),
+            agenda.getUsuario().getIduser(),
             agenda.getTipo(),
             agenda.getData()
         );
@@ -33,8 +33,8 @@ public class AgendaService {
 
     /* Criar agenda */
     public AgendaResponseDto createAgenda(AgendaPostDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.getId_user())
-            .orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + dto.getId_user() + " não encontrado."));
+        Usuario usuario = usuarioRepository.findById(dto.getIduser())
+            .orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + dto.getIduser() + " não encontrado."));
 
         Agenda agenda = new Agenda();
         agenda.setUsuario(usuario);
@@ -49,8 +49,8 @@ public class AgendaService {
         Agenda agenda = agendaRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Agenda com ID " + id + " não encontrada."));
 
-        Usuario usuario = usuarioRepository.findById(dto.getId_user())
-            .orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + dto.getId_user() + " não encontrado."));
+        Usuario usuario = usuarioRepository.findById(dto.getIduser())
+            .orElseThrow(() -> new IllegalArgumentException("Usuário com ID " + dto.getIduser() + " não encontrado."));
 
         agenda.setUsuario(usuario);
         agenda.setTipo(dto.getTipo());

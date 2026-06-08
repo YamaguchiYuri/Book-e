@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UniversidadePutDto {
-    private Long id_uni;
-    private String uni_nome;
+    private Long iduni;
+    private String uninome;
 }
 

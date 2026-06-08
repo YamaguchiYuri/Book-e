@@ -19,15 +19,15 @@ public class UniversidadeService {
     private UniversidadeResponseDto toResponseUniversidadeDto(Universidade universidade){
         if (universidade== null) return null;
         return new UniversidadeResponseDto(
-            universidade.getId_uni(),
-            universidade.getUni_nome()
+            universidade.getIduni(),
+            universidade.getUninome()
         );
     }
 
         /*criar */
     public UniversidadeResponseDto createUniversidade(UniversidadePostDto dto) {
         Universidade universidade = new Universidade();
-        universidade.setUni_nome(dto.getUni_nome());
+        universidade.setUninome(dto.getUninome());
 
         return toResponseUniversidadeDto(universidadeRepository.save(universidade));
     }
@@ -37,7 +37,7 @@ public class UniversidadeService {
         Universidade universidade = universidadeRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Universidade com ID " + id + " não encontrada."));
 
-        universidade.setUni_nome(dto.getUni_nome());
+        universidade.setUninome(dto.getUninome());
 
         return toResponseUniversidadeDto(universidadeRepository.save(universidade));
     }

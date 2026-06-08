@@ -1,10 +1,11 @@
 package com.api.booke.domain.notadesempenho;
 
+import com.api.booke.domain.formulavariavel.VariavelFormulaRepository;
 import com.api.booke.domain.materia.MateriaRepository;
 import com.api.booke.domain.notadesempenho.dto.*;
 import com.api.booke.entitites.Materia;
 import com.api.booke.entitites.NotaDesempenho;
-
+import com.api.booke.entitites.VariavelFormula;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +18,14 @@ public class NotaDesempenhoService {
 
     private final NotaDesempenhoRepository notaDesempenhoRepository;
     private final MateriaRepository materiaRepository;
+    private final VariavelFormulaRepository variavelFormulaRepository;
 
     public NotaDesempenhoService(NotaDesempenhoRepository notaDesempenhoRepository,
-                                 MateriaRepository materiaRepository) {
+                                 MateriaRepository materiaRepository,
+                                 VariavelFormulaRepository variavelFormulaRepository) {
         this.notaDesempenhoRepository = notaDesempenhoRepository;
         this.materiaRepository = materiaRepository;
+        this.variavelFormulaRepository = variavelFormulaRepository;
     }
 
     // ===========================
@@ -29,13 +33,17 @@ public class NotaDesempenhoService {
     // ===========================
     @Transactional
     public NotaDesempenhoResponseDto create(NotaDesempenhoPostDto dto) {
-        Materia materia = materiaRepository.findById(dto.getId_materia())
+
+        Materia materia = materiaRepository.findById(dto.getIdmateria())
                 .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
 
+        VariavelFormula variavel = variavelFormulaRepository.findById(dto.getIdvariavel())
+                .orElseThrow(() -> new RuntimeException("Variável não encontrada"));
+
         NotaDesempenho nota = new NotaDesempenho();
-        nota.setNota_cadastro(dto.getNota_cadastro());
+        nota.setNota_cadastro(dto.getNotacadastro());
         nota.setMateria(materia);
-        nota.setTiponota(dto.getTiponota());
+        nota.setVariavel(variavel);
 
         notaDesempenhoRepository.save(nota);
         return toResponse(nota);
@@ -46,15 +54,19 @@ public class NotaDesempenhoService {
     // ===========================
     @Transactional
     public NotaDesempenhoResponseDto update(NotaDesempenhoPutDto dto) {
-        NotaDesempenho nota = notaDesempenhoRepository.findById(dto.getId_nota_desempenho())
+
+        NotaDesempenho nota = notaDesempenhoRepository.findById(dto.getIdnotadesempenho())
                 .orElseThrow(() -> new RuntimeException("Nota não encontrada"));
 
-        Materia materia = materiaRepository.findById(dto.getId_materia())
+        Materia materia = materiaRepository.findById(dto.getIdmateria())
                 .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
 
-        nota.setNota_cadastro(dto.getNota_cadastro());
+        VariavelFormula variavel = variavelFormulaRepository.findById(dto.getIdvariavel())
+                .orElseThrow(() -> new RuntimeException("Variável não encontrada"));
+
+        nota.setNota_cadastro(dto.getNotacadastro());
         nota.setMateria(materia);
-        nota.setTiponota(dto.getTiponota());
+        nota.setVariavel(variavel);
 
         notaDesempenhoRepository.save(nota);
         return toResponse(nota);
@@ -80,12 +92,15 @@ public class NotaDesempenhoService {
     }
 
     // ===========================
-    // GET BY MATERIA (listar todas as notas de uma matéria)
+    // GET BY MATERIA
     // ===========================
     public List<NotaDesempenhoResponseDto> getByMateria(Long idMateria) {
-        return notaDesempenhoRepository.findAll()
+
+        Materia materia = materiaRepository.findById(idMateria)
+                .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
+
+        return notaDesempenhoRepository.findByMateria(materia)
                 .stream()
-                .filter(n -> n.getMateria().getId_materia().equals(idMateria))
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
@@ -106,11 +121,10 @@ public class NotaDesempenhoService {
     // ===========================
     private NotaDesempenhoResponseDto toResponse(NotaDesempenho nota) {
         return new NotaDesempenhoResponseDto(
-                nota.getId_nota_desempenho(),
+                nota.getIdnotadesempenho(),
                 nota.getNota_cadastro(),
-                nota.getMateria().getId_materia(),
-                nota.getTiponota()
-
+                nota.getMateria().getIdmateria(),
+                nota.getVariavel().getIdvariavel() // agora correto
         );
     }
 }

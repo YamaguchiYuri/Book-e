@@ -34,16 +34,24 @@ async function fetchAgendas() {
 
 async function createAgenda(type, date) {
     const body = {
-        id_user: currentUserId,
+        iduser: Number(currentUserId), // Provável correção: sem underline e convertido para Número
         tipo: type,
         data: date
     };
-    const response = await fetch('http://localhost:8081/api/agenda', {
+    
+    // Verifique se a sua rota é essa mesma ou se termina com /criar
+    const response = await fetch('http://localhost:8081/api/agenda', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     });
-    if (!response.ok) throw new Error('Erro ao criar agenda');
+    
+    if (!response.ok) {
+        // Agora vamos capturar a mensagem real de erro que o Java manda!
+        const errorText = await response.text();
+        throw new Error(`Java retornou erro: ${errorText || response.statusText}`);
+    }
+    
     return response.json();
 }
 
@@ -56,47 +64,51 @@ async function deleteAgenda(id) {
 
 
 async function renderAgenda() {
-try {
+    try {
+        const events = await fetchAgendas(); 
+        _updateWidgetCallback(events); 
 
-    const events = await fetchAgendas(); 
-    
+        if (!events || events.length === 0) {
+            return; 
+        }
 
-    _updateWidgetCallback(events); 
-
-    listArea.innerHTML = '';
-
-    if (events.length === 0) {
-      listArea.innerHTML = '<p style="color:white; text-align:center; top:10%">Nenhum compromisso.</p>';
-      return; 
-    }
-
- 
         events.sort((a, b) => new Date(a.data) - new Date(b.data));
 
+        // Construir todo o HTML primeiro é mais seguro e evita bugs nos botões
+        let htmlString = '';
+
         events.forEach(event => {
-          const eventId = event.id ?? event.id_agenda; 
-          if (!eventId) return; 
+            // Cobre as 3 formas mais comuns do Java retornar esse ID
+            const eventId = event.id || event.idagenda || event.id_agenda; 
+            
+            if (!eventId) {
+                console.warn("Evento sem ID ignorado:", event);
+                return; 
+            }
         
-          const itemHTML = `
-            <div class="agenda-item" data-event-id="${eventId}">
-              <div class="agenda-item-details">
-                <span><strong>Tipo:</strong> ${event.tipo}</span>
-                <span><strong>Data:</strong> ${formatDate(event.data)}</span>
-              </div>
-              <span class="agenda-item-delete" data-event-id="${eventId}">X</span>
-            </div>
-          `;
-          listArea.innerHTML += itemHTML;
+            htmlString += `
+                <div class="agenda-item" data-event-id="${eventId}">
+                    <div class="agenda-item-details">
+                        <span><strong>Tipo:</strong> ${event.tipo}</span>
+                        <span><strong>Data:</strong> ${formatDate(event.data)}</span>
+                    </div>
+                    <span class="agenda-item-delete delete-nota-btn" data-event-id="${eventId}">[X]</span>
+                </div>
+            `;
         });
         
+        // Injeta tudo de uma vez
+        listArea.innerHTML = htmlString;
 
-    listArea.querySelectorAll('.agenda-item-delete').forEach(button => {
-      button.addEventListener('click', handleDeleteEvent);
-    });
-  } catch (err) {
-    console.error(err);
-    listArea.innerHTML = '<p style="color:red">Erro ao carregar agenda.</p>';
-  }
+        // Adiciona os ouvintes de exclusão APÓS os elementos estarem na tela
+        listArea.querySelectorAll('.agenda-item-delete').forEach(button => {
+            button.addEventListener('click', handleDeleteEvent);
+        });
+
+    } catch (err) {
+        console.error(err);
+        listArea.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Erro ao carregar agenda.</p>';
+    }
 }
 function formatDate(dateString) {
   if (!dateString) return 'Data indefinida';
@@ -128,19 +140,28 @@ async function handleAddEvent() {
 
 async function handleDeleteEvent(e) {
     const idStr = e.target.dataset.eventId;
-    const id = Number(idStr); // converte para número
+    const id = Number(idStr); 
 
     if (!id) {
         console.error('ID do evento inválido:', idStr);
         return;
     }
 
+    // Adiciona uma confirmação para o usuário não apagar sem querer
+    if (!confirm('Deseja excluir este compromisso?')) {
+        return;
+    }
+
     try {
+        // Usa o botão para mostrar que está carregando (opcional, mas bom feedback)
+        e.target.innerText = '...'; 
+        
         await deleteAgenda(id);
-        await renderAgenda();
+        await renderAgenda(); // Recarrega a lista atualizada
     } catch (err) {
         console.error(err);
         alert('Erro ao deletar agenda.');
+        e.target.innerText = '[X]'; // Volta ao normal se der erro
     }
 }
 

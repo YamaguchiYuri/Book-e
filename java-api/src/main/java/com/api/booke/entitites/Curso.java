@@ -21,20 +21,20 @@ public class Curso{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_curso")
-    private Long id_curso;
+    private Long idcurso;
 
     @Column(name = "nome_curso", length = 30, nullable = false)
-    private String nome_curso;
+    private String nomecurso;
 
     @Column(name = "semestre", nullable = false)
-    private Integer semestre;
+    private Integer semestre; /*numero de semestres */
 
     // RELACIONAMENTO COM UNIVERSIDADECURSO
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UniversidadeUsuario> universidades = new HashSet<>();
 
     public Curso(String nome_curso, Integer semestre) {
-        this.nome_curso = nome_curso;
+        this.nomecurso = nome_curso;
         this.semestre = semestre;
     }
 }
