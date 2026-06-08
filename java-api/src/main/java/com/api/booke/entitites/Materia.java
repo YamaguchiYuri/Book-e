@@ -26,6 +26,9 @@ public class Materia {
     @Column(length = 40, nullable = false)
     private String nomemateria;
 
+    @Column(name = "aprovacao") // Nome explícito ajuda muito
+    private Double aprovacao;
+
     @OneToMany(mappedBy = "materia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Formula> formula;
 

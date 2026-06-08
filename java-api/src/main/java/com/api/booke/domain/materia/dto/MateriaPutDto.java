@@ -16,4 +16,5 @@ import lombok.*;
     private int semestremateria;
     private String nomemateria;
     private Long iduniversidadeusuario;
- }
+    private Double aprovacao;
+    }

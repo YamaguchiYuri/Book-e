@@ -32,6 +32,7 @@ public class MateriaService {
         materia.setNomemateria(dto.getNomemateria());
         materia.setSemestre_materia(dto.getSemestremateria());
         materia.setUniversidadeUsuario(universidadeUsuario);
+        materia.setAprovacao(dto.getAprovacao());
 
         materiaRepository.save(materia);
         return toResponse(materia);
@@ -49,6 +50,7 @@ public class MateriaService {
         materia.setNomemateria(dto.getNomemateria());
         materia.setSemestre_materia(dto.getSemestremateria());
         materia.setUniversidadeUsuario(universidadeUsuario);
+        materia.setAprovacao(dto.getAprovacao());
 
         materiaRepository.save(materia);
         return toResponse(materia);
@@ -92,7 +94,8 @@ public class MateriaService {
         return new MateriaResponseDto(
                 materia.getIdmateria(),
                 materia.getSemestre_materia(),
-                materia.getNomemateria()
+                materia.getNomemateria(),
+                materia.getAprovacao()
         );
     }
 
@@ -107,6 +110,7 @@ public List<MateriaFullResponseDto> getFullByUserId(Long idUser) {
                         m.getIdmateria(),
                         m.getSemestre_materia(),
                         m.getNomemateria(),
+                        m.getAprovacao(),
 
                         uu.getIduniversidadeusuario(),
 

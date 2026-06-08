@@ -14,4 +14,6 @@ public class MateriaResponseDto {
     private Long idmateria;
     private int semestremateria;
     private String nomemateria;
+    private Double aprovacao;
+
 }

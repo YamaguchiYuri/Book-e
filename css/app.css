@@ -560,3 +560,263 @@ body {
 #inserir-materia .btn {
     position: static;
 }
+
+/* --- AJUSTE DE LAYOUT DO MODAL DE MATÉRIAS (LEGIBILIDADE) --- */
+
+.content-materias {
+    height: 600px; /* Aumentamos um pouco para dar mais conforto */
+    display: flex;
+    flex-direction: column;
+    padding: 15px; /* Mais padding nas bordas */
+    gap: 12px;     /* Espaçamento maior entre a lista e o formulário */
+}
+
+#lista-materias-app {
+    flex-grow: 1;
+    min-height: 150px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 10px;
+    background-color: #94add3;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+    list-style: none;
+}
+
+#inserir-materia {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espaço entre os campos */
+}
+
+/* --- MELHORIA DA LEITURA --- */
+
+#inserir-materia label {
+    font-size: 11px; /* Aumentamos de 8px para 11px */
+    margin: 0;
+    padding: 0;
+    color: #ffffff; /* Garante contraste */
+}
+
+#inserir-materia input {
+    height: 35px; /* Altura maior para facilitar a escrita */
+    padding: 0 10px;
+    font-size: 12px; /* Aumentamos de 10px para 12px */
+    border: 2px solid #94add3;
+    background-color: #d1dff7;
+    color: #2c3e50; /* Texto mais escuro para ler melhor */
+    font-family: 'Press Start 2P', cursive;
+}
+
+#btn-add-materia-app {
+    margin-top: 10px; /* Mais espaço para o botão */
+    padding: 12px;
+    width: 100%;
+    font-size: 12px; /* Botão mais legível */
+    cursor: pointer;
+}
+
+/* --- SISTEMA DE DESIGN PIXEL-ART (APLICÁVEL A QUALQUER MODAL) --- */
+
+/* 1. Inputs Padronizados */
+.pixel-input {
+    width: 100%;
+    height: 35px;
+    padding: 0 10px;
+    border: 3px solid #94add3;
+    background-color: #fff;
+    color: #000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    box-sizing: border-box;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+/* 2. Botões Padronizados */
+.pixel-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn-salvar {
+    background-color: #90f990;
+    color: #2e7d32;
+    box-shadow: 0 4px 0 #489c48;
+}
+
+.btn-del {
+    background-color: #ff5555;
+    color: white;
+    box-shadow: 0 2px 0 #990000;
+    padding: 5px 8px;
+    font-size: 8px;
+}
+
+/* 3. Cards de Matéria (Harmonização) */
+.materia-card {
+    background-color: #e6f0ff;
+    border: 3px solid #94add3;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+}
+
+.materia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 2px dashed #94add3;
+    padding-bottom: 5px;
+}
+
+/* Aplicando as classes no seu JS */
+
+/* --- LIMPEZA E ORGANIZAÇÃO DO MODAL NOTAS --- */
+
+#modal-notas .dialog_content {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    height: 550px; /* Altura fixa para manter a proporção */
+}
+
+/* Área da Lista */
+#notas-list-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    list-style: none;
+    padding: 10px;
+    background-color: #94add3;
+    box-shadow: inset 0 2px 0 #888, inset 2px 0 0 #888;
+}
+
+/* Card da Matéria - O elemento principal que organiza tudo */
+.materia-card {
+    background-color: #b3d2ff;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #94add3;
+}
+
+/* Cabeçalho da Matéria (Nome + Status) */
+.materia-header {
+    display: flex;
+    justify-content: space-between; /* Empurra o status para a direita */
+    align-items: center;
+    border-bottom: 2px dashed #9f85d4;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.materia-header h3 {
+    margin: 0;
+    font-size: 11px;
+    color: #fff;
+}
+
+/* Status Badge - Agora dentro do fluxo, sem cobrir nada */
+.status-badge {
+    font-size: 9px;
+    padding: 4px 6px;
+    color: white;
+    font-weight: bold;
+    border-radius: 0;
+    text-shadow: none;
+}
+.status-aprovado { background-color: #2a9d8f; }
+.status-reprovado { background-color: #e63946; }
+
+/* Linha de Faltas - Ajustada */
+.materia-faltas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #d1dff7;
+    padding: 5px;
+    font-size: 9px;
+    margin-bottom: 8px;
+    border: 1px solid #94add3;
+}
+/* --- HARMONIA VISUAL: NOTAS E FALTAS (LIMPO) --- */
+
+/* 1. Container Principal */
+.materia-card {
+    background-color: #b3d2ff;
+    border: 2px solid #94add3;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+}
+
+/* 2. Cabeçalho da Matéria */
+.materia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px dashed #9f85d4;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.materia-header h3 {
+    margin: 0;
+    font-size: 11px;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+}
+
+/* 3. Badges de Status (Consolidado) */
+.status-badge {
+    font-size: 9px;
+    padding: 3px 5px;
+    color: white;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+.status-aprovado { background-color: #2a9d8f; }
+.status-reprovado { background-color: #e63946; }
+
+/* 4. Bloco de Faltas (Consolidado) */
+.materia-faltas-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #d1dff7;
+    padding: 6px;
+    margin: 5px 0;
+    font-size: 10px;
+    border: 1px solid #94add3;
+}
+
+.btn-falta {
+    background: #bf9fff;
+    border: 1px solid #9f85d4;
+    cursor: pointer;
+    padding: 2px 8px;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+}
+
+/* 5. Lista de Notas (Consolidado) */
+.materia-notas-lista ul { 
+    list-style: none; 
+    padding: 0; 
+    margin: 5px 0; 
+}
+
+.materia-notas-lista li {
+    display: flex;
+    justify-content: space-between;
+    color: #ffffff; 
+    font-size: 11px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #94add3;
+    padding: 4px 0;
+}
+

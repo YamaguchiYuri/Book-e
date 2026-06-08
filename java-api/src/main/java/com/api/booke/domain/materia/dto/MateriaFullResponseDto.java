@@ -14,6 +14,7 @@ public class MateriaFullResponseDto {
     private Long idmateria;
     private int semestre_materia;
     private String nomemateria;
+    private Double aprovacao;
 
     private Long iduniversidadeusuario;
 

@@ -4,7 +4,10 @@ export function initMaterias(userId) {
     const btnAddMateria = document.getElementById('btn-add-materia-app');
     const inputNome = document.getElementById('nome-materia-app');
     const inputCiclo = document.getElementById('ciclo-materia-app');
-    const inputFormula = document.getElementById('formula-materia-app'); // Novo input
+    const inputFormula = document.getElementById('formula-materia-app'); 
+    // --beatriz-- selecionando os inputs de aprovação e limite de faltas
+    const inputAprovacao = document.getElementById('aprovacao-materia-app');
+    const inputLimiteFaltas = document.getElementById('limite-faltas-app');
     const listaUl = document.getElementById('lista-materias-app');
 
     const adicionarMateriaNaTela = (idMateria, nome, ciclo) => {
@@ -51,14 +54,17 @@ export function initMaterias(userId) {
         }
     };
 
-    // Lógica de 2 etapas (POST Materia -> POST Formula)
+    // Lógica de 3 etapas (POST Materia -> POST Formula -> POST Faltas)
     btnAddMateria.addEventListener('click', async () => {
         const nomeMateria = inputNome.value.trim();
         const cicloMateria = Number(inputCiclo.value);
         const textoFormula = inputFormula.value.trim();
+        // --beatriz-- capturando os novos valores
+        const aprovacao = Number(inputAprovacao.value);
+        const limiteFaltas = Number(inputLimiteFaltas.value);
 
-        if (!nomeMateria || !cicloMateria || !textoFormula) {
-            alert("Preencha o nome, o ciclo e a fórmula da matéria!");
+        if (!nomeMateria || !cicloMateria || !textoFormula || !aprovacao || !limiteFaltas) {
+            alert("Preencha todos os campos: Nome, Ciclo, Fórmula, Aprovação e Limite de Faltas!");
             return;
         }
 
@@ -72,7 +78,9 @@ export function initMaterias(userId) {
         const payloadMateria = {
             semestremateria: cicloMateria,
             nomemateria: nomeMateria,
-            iduniversidadeusuario: idUniUsuario
+            iduniversidadeusuario: idUniUsuario,
+            // --beatriz-- salvando aprovacao na matéria
+            aprovacao: aprovacao
         };
 
         try {
@@ -95,16 +103,24 @@ export function initMaterias(userId) {
                 idmateria: novaMateriaSalva.idmateria
             };
 
-            const responseFormula = await fetch("http://localhost:8081/api/formulas", {
+            await fetch("http://localhost:8081/api/formulas", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payloadFormula)
             });
 
-            if (!responseFormula.ok) {
-                // Se a fórmula falhar, avisamos, mas a matéria já existe
-                alert("Matéria criada, mas houve um erro ao registrar a fórmula.");
-            }
+            // --beatriz-- 3. Criando o registro de faltas inicial
+            const payloadFaltas = {
+                idmateria: novaMateriaSalva.idmateria,
+                numfaltas: 0,
+                limitefaltas: limiteFaltas
+            };
+
+            await fetch("http://localhost:8081/api/faltas/criar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payloadFaltas)
+            });
 
             // Adiciona na tela
             const ciclo = novaMateriaSalva.semestre_materia || novaMateriaSalva.semestremateria;
@@ -114,6 +130,9 @@ export function initMaterias(userId) {
             inputNome.value = '';
             inputCiclo.value = '';
             inputFormula.value = '';
+            // --beatriz-- limpando campos extras
+            inputAprovacao.value = '';
+            inputLimiteFaltas.value = '';
 
             window.dispatchEvent(new Event('materiaAdicionada'));
 
@@ -135,6 +154,8 @@ export function initMaterias(userId) {
             if (!confirmar) return;
 
             try {
+                // Ao deletar a matéria, seu backend (com o CascadeType.ALL que configuramos) 
+                // cuidará de deletar a Fórmula e as Faltas automaticamente.
                 const response = await fetch(`http://localhost:8081/api/materias/${idMateria}`, { method: 'DELETE' });
                 if (!response.ok) throw new Error(await response.text());
 

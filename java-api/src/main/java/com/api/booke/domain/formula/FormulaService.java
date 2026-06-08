@@ -30,6 +30,18 @@ public class FormulaService {
     // -----------------------------------
     @Transactional
     public FormulaResponseDto create(FormulaPostDto dto) {
+    
+            // --beatriz-- validação robusta: definindo argumentos dummy para não dar erro de "token desconhecido"
+    Expression e = new Expression(dto.getExpressao());
+    
+    // Adiciona todos os argumentos desconhecidos como 0.0 para validar a sintaxe matemática
+    for (String var : e.getMissingUserDefinedArguments()) {
+        e.addArguments(new Argument(var, 0.0));
+    }
+
+    if (!e.checkSyntax()) {
+        throw new RuntimeException("Fórmula inválida: " + e.getErrorMessage());
+    }
         Materia materia = materiaRepository.findById(dto.getIdmateria())
                 .orElseThrow(() -> new RuntimeException("Matéria não encontrada"));
 
